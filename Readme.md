@@ -17,7 +17,9 @@ github as well.
 $ nji amqp
 ```
 
-## Install Java SE JDK
+## Install Java SE JDK version 1.6.0_29
+
+verified that this DOES NOT WORK with 1.7!
 
 http://www.oracle.com/technetwork/java/javase/downloads/index.html  
 (Java EE is also OK)
