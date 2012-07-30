@@ -286,8 +286,13 @@ trait SemiMonadicJSONAMQPTwistedPair[T]
 {  
   self : WireTap with Journalist =>
 
-  import AMQPDefaults._
-  
+  //import AMQPDefaults._
+  import AMQPDefaults.defaultConnectionFactory
+  import AMQPDefaults.defaultHost
+  import AMQPDefaults.defaultExchange
+  import AMQPDefaults.defaultRoutingKey
+  import AMQPDefaults.defaultURI
+
   def srcURI : Moniker
   def trgtURI : Moniker
 

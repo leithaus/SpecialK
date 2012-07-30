@@ -57,99 +57,99 @@ trait JSONToScalaHandler {
   }
 }
 
-trait JSONToSQLHandler {
-  self : IdSupplier =>
-    var _objectCaching : Boolean = true
-  def objectCachingOn : Boolean = _objectCaching
-  def turnObjectCachingOn : Unit = {
-    _objectCaching = true
-  }
-  def turnObjectCachingOff : Unit = {
-    _objectCaching = false
-  }
-  var _incoming : Option[Stack[java.lang.Object]] = None      
-  def inComing : Stack[java.lang.Object] = {
-    _incoming match {
-      case Some( inC ) => inC
-      case None => {
-	val inC = new Stack[java.lang.Object] ()
-	_incoming = Some( inC )
-	inC
-      }
-    }
-  }
-  def recent : Option[java.lang.Object] = {
-    if ( inComing.isEmpty ) {
-      None      
-    }
-    else {
-      Some( inComing.pop )
-    }
-  }
-  def acquire( obj : java.lang.Object ) = {
-    inComing.push( obj )
-  }
-  var _emf : Option[EntityManagerFactory] = None
-  def entityMgrFactory( db : String ) : EntityManagerFactory = {
-    _emf match {
-      case Some( emf ) => emf
-      case None => {
-	val emf = Persistence.createEntityManagerFactory( db )
-	_emf = Some( emf )
-	emf
-      }
-    }
-  }
-  var _em : Option[EntityManager] = None
-  def entityManager( db : String ) : EntityManager = {
-    _em match {
-      case Some( em ) => em
-      case None => {
-	val em = entityMgrFactory( db ).createEntityManager()
-	_em = Some( em )
-	em
-      }
-    }
-  }
-  def handle( db : String )( contents: String ) : Unit = {
-    var obj : java.lang.Object = null;
-    try {
-      obj = 
-	new XStream(
-	  new JettisonMappedXmlDriver()
-	).fromXML(
-	  contents.replace(
-	    "Absyn", "Absyn.persistence.sql"
-	  )
-	);
+// trait JSONToSQLHandler {
+//   self : IdSupplier =>
+//     var _objectCaching : Boolean = true
+//   def objectCachingOn : Boolean = _objectCaching
+//   def turnObjectCachingOn : Unit = {
+//     _objectCaching = true
+//   }
+//   def turnObjectCachingOff : Unit = {
+//     _objectCaching = false
+//   }
+//   var _incoming : Option[Stack[java.lang.Object]] = None      
+//   def inComing : Stack[java.lang.Object] = {
+//     _incoming match {
+//       case Some( inC ) => inC
+//       case None => {
+// 	val inC = new Stack[java.lang.Object] ()
+// 	_incoming = Some( inC )
+// 	inC
+//       }
+//     }
+//   }
+//   def recent : Option[java.lang.Object] = {
+//     if ( inComing.isEmpty ) {
+//       None      
+//     }
+//     else {
+//       Some( inComing.pop )
+//     }
+//   }
+//   def acquire( obj : java.lang.Object ) = {
+//     inComing.push( obj )
+//   }
+//   var _emf : Option[EntityManagerFactory] = None
+//   def entityMgrFactory( db : String ) : EntityManagerFactory = {
+//     _emf match {
+//       case Some( emf ) => emf
+//       case None => {
+// 	val emf = Persistence.createEntityManagerFactory( db )
+// 	_emf = Some( emf )
+// 	emf
+//       }
+//     }
+//   }
+//   var _em : Option[EntityManager] = None
+//   def entityManager( db : String ) : EntityManager = {
+//     _em match {
+//       case Some( em ) => em
+//       case None => {
+// 	val em = entityMgrFactory( db ).createEntityManager()
+// 	_em = Some( em )
+// 	em
+//       }
+//     }
+//   }
+//   def handle( db : String )( contents: String ) : Unit = {
+//     var obj : java.lang.Object = null;
+//     try {
+//       obj = 
+// 	new XStream(
+// 	  new JettisonMappedXmlDriver()
+// 	).fromXML(
+// 	  contents.replace(
+// 	    "Absyn", "Absyn.persistence.sql"
+// 	  )
+// 	);
 
-      if ( objectCachingOn ) {
-	acquire( obj );
-      }
+//       if ( objectCachingOn ) {
+// 	acquire( obj );
+//       }
 
-      //generateIds( obj );
+//       //generateIds( obj );
       
-      try {
-	entityManager( db ).getTransaction().begin();
-	entityManager( db ).persist( obj );
-	entityManager( db ).getTransaction().commit();
-      }
-      catch {
-	case e => {
-	  println( "persistence error attempting to store " + obj )
+//       try {
+// 	entityManager( db ).getTransaction().begin();
+// 	entityManager( db ).persist( obj );
+// 	entityManager( db ).getTransaction().commit();
+//       }
+//       catch {
+// 	case e => {
+// 	  println( "persistence error attempting to store " + obj )
 	  
-	  e.printStackTrace
-	}
-      }
-    }
-    catch {
-      case e => {
-	  println( "marshaling error" )
-	  e.printStackTrace
-	}
-    }
-  }
-}
+// 	  e.printStackTrace
+// 	}
+//       }
+//     }
+//     catch {
+//       case e => {
+// 	  println( "marshaling error" )
+// 	  e.printStackTrace
+// 	}
+//     }
+//   }
+// }
 
 class JSONAMQPListener( host : String ) {
   val LOG_PROPERTIES_FILE : String =

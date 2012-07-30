@@ -167,17 +167,17 @@ trait IdSupplier {
   }
 }
 
-case class Fingerer(
-  rcrs    : Boolean,
-  fOUT    : Boolean
-) extends IdSupplier {
-  override def recurse() = rcrs
-  override def failOnUnknownType() = fOUT
-  override def inAction() = {
-    case x : Classic => {
-    }
-  }
-  override def getNextId() = {
-    new UUID() + ""
-  }
-}
+// case class Fingerer(
+//   rcrs    : Boolean,
+//   fOUT    : Boolean
+// ) extends IdSupplier {
+//   override def recurse() = rcrs
+//   override def failOnUnknownType() = fOUT
+//   override def inAction() = {
+//     case x : Classic => {
+//     }
+//   }
+//   override def getNextId() = {
+//     new UUID() + ""
+//   }
+// }

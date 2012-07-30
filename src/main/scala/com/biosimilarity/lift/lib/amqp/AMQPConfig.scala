@@ -10,7 +10,7 @@ package com.biosimilarity.lift.lib
 
 import com.biosimilarity.lift.lib.moniker._
 
-import net.liftweb.amqp._
+//import net.liftweb.amqp._
 
 import com.rabbitmq.client.{ Channel => RabbitChan, _}
 
