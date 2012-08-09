@@ -399,9 +399,10 @@
 <!--     </dependency> -->
    <dependency>
      <groupId>com.typesafe</groupId>
-     <artifactId>slick_2.10.0-M4</artifactId>
-     <version>0.10.0-M2</version>
+     <artifactId>slick_2.10.0-M6</artifactId>
+     <version>0.11.0</version>
    </dependency>
+            
   </dependencies>
 
   <build>
