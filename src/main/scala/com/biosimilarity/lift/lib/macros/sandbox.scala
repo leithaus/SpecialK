@@ -116,3 +116,50 @@ class Queryable[T]( expr_or_typetag : Either[ ru.Expr[_], (ru.TypeTag[_],ClassTa
   def withFilter( projection: T => Boolean ) : Queryable[T] = macro QueryableMacros.filter[T]  
   def length : QueryableValue[Int]  = macro QueryableMacros.length
 }
+
+/* ------------------------------------------------------------------------ */
+/* This is work in progress toward a scala rendering of co-do               */
+/* notation. Currently, the types are all wrong because the macros are      */
+/* simply identity macros -- to hold the place of what should be there      */
+/* eventually.                                                              */
+/* ------------------------------------------------------------------------ */
+
+object CoQueryableMacros {
+  def coFlatMapM[T:c.TypeTag, S:c.TypeTag](
+    c : scala.reflect.makro.Context
+  )(
+    coProjection : c.Expr[CoQueryable[T] => S]
+  ) : c.Expr[CoQueryable[T] => S] = {
+    c.universe.reify{ coProjection.splice }
+  }
+
+  def filter[T:c.TypeTag](
+    c : scala.reflect.makro.Context
+  )(
+    coProjection : c.Expr[T => Boolean]
+  ) : c.Expr[T => Boolean] = {
+    c.universe.reify{ coProjection.splice }
+  }
+
+  //def coFlatMap[T,S]( coProjection : CoQueryable[T] => S ) : CoQueryable[T] => S = macro coFlatMapM[T,S]
+  
+}
+
+class CoQueryableValue[T]( val value : ru.Expr[T] )
+abstract class BaseCoQueryable [T]( val expr_or_typetag : Either[ ru.Expr[_], (ru.TypeTag[_],ClassTag[_]) ] ){
+  def queryable = this
+}
+
+object CoQueryOps{
+  def query[T]( queryable:BaseCoQueryable[T] ) : QueryOps[T] = ???
+}
+class CoQueryOps[T]{
+  def coFlatMap[S]( coProjection: T => BaseCoQueryable[S] ) : BaseCoQueryable[S] = ???
+  def filter( coProjection: T => Boolean ) : BaseCoQueryable[T] = ???
+}
+
+class CoQueryable[T]( expr_or_typetag : Either[ ru.Expr[_], (ru.TypeTag[_],ClassTag[_]) ] ) extends BaseCoQueryable[T]( expr_or_typetag ){
+  def coFlatMap[S]( coProjection : CoQueryable[T] => S ) : CoQueryable[T] => S = macro CoQueryableMacros.coFlatMapM[T,S]
+  def filter( coProjection : T => Boolean ) : T => Boolean = macro CoQueryableMacros.filter[T]
+  def withFilter( coProjection : T => Boolean ) : T => Boolean = macro CoQueryableMacros.filter[T]  
+}
