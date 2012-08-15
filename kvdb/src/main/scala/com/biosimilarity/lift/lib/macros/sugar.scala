@@ -54,6 +54,6 @@ object Sugareedoo {
   
   lazy val cq1 : CoQueryable[Weird] = CoQueryable[Weird]
  
-  //def splode() = cq1.cfor[String]( sfunOne )
+  def splode() = cq1.cfor[String]( sfunOne )
  
 }
