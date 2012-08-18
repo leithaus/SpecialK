@@ -53,7 +53,13 @@ object Sugareedoo {
   }
   
   lazy val cq1 : CoQueryable[Weird] = CoQueryable[Weird]
+  def g( z : String ) = CoQueryable[Weird]
  
-  def splode() = cq1.cfor[String]( sfunOne )
+  def splode( z : String ) = cq1.cfor[String](
+    ( cqry1 : CoQueryable[Weird] ) => { cqry1 + "" }
+  )
+  def splode2() = cq1.coFlatMap[String](
+    ( cqry1 : CoQueryable[Weird] ) => { cqry1 + "" }
+  )
  
 }

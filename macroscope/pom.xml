@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.biosimilarity.twoten</groupId>
-  <artifactId>KVDB</artifactId>
-  <version>1.1</version>
+  <artifactId>macroscope</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
   <description>A distributed key-value database with prolog terms as keys</description>
@@ -101,16 +101,6 @@
   </pluginRepositories>
 -->
   <dependencies>
-    <dependency>
-      <groupId>com.biosimilarity.twoten</groupId>
-      <artifactId>mdp4tw</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.biosimilarity.twoten</groupId>
-      <artifactId>macroscope</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
     <dependency>
 	<groupId>biz.source_code</groupId>
 	<artifactId>base64coder</artifactId>
@@ -444,7 +434,6 @@
 <!-- 	    <arg>-P:sxr:base-directory:${basedir}/src</arg> -->
 	    <arg>-P:continuations:enable</arg>
 	    <arg>-language:experimental.macros</arg>
-	    <arg>-Ymacro-debug-lite</arg>
           </args>
 	  <compilerPlugins>
       	    <compilerPlugin>	      

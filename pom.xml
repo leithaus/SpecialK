@@ -37,7 +37,8 @@
     </distributionManagement>
 
     <modules>
-      <module>macrosia</module>
+      <module>mdp4tw</module>
+      <module>macroscope</module>
       <module>kvdb</module>      
     </modules>
 
