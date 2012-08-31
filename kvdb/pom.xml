@@ -19,7 +19,7 @@
     <maven.compiler.source>1.5</maven.compiler.source>
     <maven.compiler.target>1.5</maven.compiler.target>
     <encoding>UTF-8</encoding>
-    <scala.version>2.10.0-M6</scala.version>
+    <scala.version>2.10.0-M7</scala.version>
   </properties>
 
   <distributionManagement>
@@ -445,6 +445,7 @@
 	    <arg>-P:continuations:enable</arg>
 	    <arg>-language:experimental.macros</arg>
 	    <arg>-Ymacro-debug-lite</arg>
+	    <arg>-Xoldpatmat</arg>
           </args>
 	  <compilerPlugins>
       	    <compilerPlugin>	      

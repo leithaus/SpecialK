@@ -19,7 +19,7 @@
     <maven.compiler.source>1.5</maven.compiler.source>
     <maven.compiler.target>1.5</maven.compiler.target>
     <encoding>UTF-8</encoding>
-    <scala.version>2.10.0-M6</scala.version>
+    <scala.version>2.10.0-M7</scala.version>
   </properties>
 
   <distributionManagement>
@@ -101,6 +101,11 @@
   </pluginRepositories>
 -->
   <dependencies>
+    <dependency>
+      <groupId>com.biosimilarity.twoten</groupId>
+      <artifactId>mdp4tw</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
     <dependency>
 	<groupId>biz.source_code</groupId>
 	<artifactId>base64coder</artifactId>
