@@ -356,7 +356,8 @@ trait CnxnXML[Namespace,Var,Tag] {
       }
     def groundXform : Parser[CnxnCtxtLabel[String,String,Any] with Factual] =
       (
-	stringLiteral ^^ ( x => new CnxnCtxtLeaf[String,String,Any]( Left[Any,String]( x.replace( "\"", "" ) ) ) )
+	//stringLiteral ^^ ( x => new CnxnCtxtLeaf[String,String,Any]( Left[Any,String]( x.replace( "\"", "" ) ) ) )
+	stringLiteral ^^ ( x => new CnxnCtxtLeaf[String,String,Any]( Left[Any,String]( "'" + x.replace( "\"", "" ) + "'" ) ) )
 	| floatingPointNumber ^^ ( x => new CnxnCtxtLeaf[String,String,Any]( Left[Any,String]( x.toDouble ) ) )
 	| "true" ^^ ( x => new CnxnCtxtLeaf[String,String,Any]( Left[Any,String]( true ) ) )
 	| "false" ^^ ( x => new CnxnCtxtLeaf[String,String,Any]( Left[Any,String]( false ) ) )
@@ -894,7 +895,8 @@ object CnxnConversionStringScope
     obj match {
       //case "" => "\"\""
       case s : String => {
-	s
+	//s
+	"'" + s + "'"
       }      
       case _ => obj + ""
     }
