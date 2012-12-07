@@ -39,7 +39,8 @@ trait CnxnConversions[Namespace,Var,Tag] {
 	case Left( t ) => {
 	  t match {
 	    case s : String => {
-	      "\"" + s + "\""
+	      //"\"" + s + "\""
+	      "'" + s + "'"
 	    }
 	    case _ => t + ""
 	  }
@@ -307,9 +308,12 @@ with PrologMgr {
     }
     else {
       val prover = getProver()
+      val qry =
+	cnxnCtxtLabelToTermStr( clabel1 ) + " = " + cnxnCtxtLabelToTermStr( clabel2 ) + "."
+      println( "matchMap qry: " + qry )
       val solution : Solution[Object] =
 	prover.solve(
-	  cnxnCtxtLabelToTermStr( clabel1 ) + " = " + cnxnCtxtLabelToTermStr( clabel2 ) + "."
+	  qry
 	)
       dropProver( prover )
       
