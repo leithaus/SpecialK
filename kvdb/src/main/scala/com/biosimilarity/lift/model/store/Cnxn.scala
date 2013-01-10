@@ -303,12 +303,23 @@ class CCnxn[Src,Label,Trgt](
 ) extends Cnxn[Src,Label,Trgt]
 
 object CCnxn {
+  def apply[Src,Label,Trgt](
+    src : Src, lbl : Label, trgt : Trgt 
+  ) : CCnxn[Src,Label,Trgt] = {
+    new CCnxn[Src,Label,Trgt]( src, lbl, trgt )
+  }
   def unapply[Src,Label,Trgt](
     cnxn : CCnxn[Src,Label,Trgt]
   ) : Option[(Src,Label,Trgt)] = {
     Some( ( cnxn.src, cnxn.label, cnxn.trgt ) )
   }  
 }
+
+class URICnxn(
+  override val src : URI, 
+  override val label : URI, 
+  override val trgt : URI
+) extends CCnxn[URI,URI,URI]( src, label, trgt )
 
 case class StringCnxnLeaf( override val tag : String )
      extends CnxnLeaf[String,String]( tag )

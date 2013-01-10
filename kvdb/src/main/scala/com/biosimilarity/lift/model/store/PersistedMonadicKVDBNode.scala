@@ -1975,7 +1975,7 @@ package usage {
 	      override def storeUnitStr[Src,Label,Trgt]( cnxn : Cnxn[Src,Label,Trgt] ) : String = {     
 		cnxn match {
 		  case CCnxn( s, l, t ) => s.toString + l.toString + t.toString
-		}	    
+		}		
 	      }	
 	      
 	      def kvNameSpace : String = "record"
