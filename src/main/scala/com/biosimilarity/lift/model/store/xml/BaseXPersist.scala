@@ -67,6 +67,7 @@ with Schema
   {
     try {
       clientSession.execute(new Open(collectionName))
+      clientSession.execute(new Close())
       true
     }
     catch {
@@ -126,11 +127,13 @@ with Schema
     synchronized {
       try {
         clientSession.execute(new Open(collectionName))
+        clientSession.execute(new Close())
       }
       catch {
         case bxe : BaseXException => {
           try {
             clientSession.execute(new CreateDB(collectionName, emptyDocument()))
+            clientSession.execute(new Close())
           }
           catch {
             case e => {
@@ -304,6 +307,7 @@ with Schema
 
     try {
       clientSession.execute(new XQuery(insertQry))
+      clientSession.execute(new Close())
     }
     catch {
       case e: BaseXException => {
@@ -358,6 +362,7 @@ with Schema
     val clientSession = clientSessionFromPool
     try {
       val res = clientSession.execute(new DropDB(collectionName))
+      clientSession.execute(new Close())
       pool.returnClientSession(clientSession, dbHost, dbPort.toInt, dbUser, dbPwd)
       res
     }
@@ -411,6 +416,7 @@ with Schema
   {
     for (query <- queries) {
       clientSession.execute(new XQuery(query))
+      clientSession.execute(new Close())
     }
   }
 
@@ -441,8 +447,10 @@ with Schema
     try {
       clientSession.setOutputStream(srvrRspStrm)
       clientSession.execute(new XQuery(query))
+      val resp = srvrRspStrm.toString("UTF-8")
       clientSession.setOutputStream(null)
-      srvrRspStrm.toString("UTF-8")
+      clientSession.execute(new Close())
+      resp
     }
     catch {
       case e: BaseXException => {
@@ -485,6 +493,7 @@ with Schema
       clientSession.setOutputStream(srvrRspStrm)
       clientSession.execute(new XQuery(query))
       val res = getRslts( srvrRspStrm )
+      clientSession.execute(new Close())
       pool.returnClientSession(clientSession, dbHost, dbPort.toInt, dbUser, dbPwd )
       res
     }
