@@ -32,8 +32,8 @@ object BaseXPersistTestSpecs
   val dbPwd = "admin"
 
   val numThreads = 10
-  val qPerThread = 20
-  val numDbs = 5
+  val qPerThread = 5
+  val numDbs = 2
 
   "PooledBaseXPersist test" should {
     class BaseXPersistUtils extends BaseXXMLStore
