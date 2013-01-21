@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.biosimilarity.lift</groupId>
   <artifactId>specialK</artifactId>
-  <version>1.1.1.7</version>
+  <version>1.1.1.8</version>
   <packaging>jar</packaging>
   <name>specialK Project</name>
   <inceptionYear>2010</inceptionYear>
@@ -517,7 +517,7 @@
     <dependency>
       <groupId>org.basex</groupId>
       <artifactId>basex-api</artifactId>
-      <version>7.5-SNAPSHOT-PROTEGRA-20121812</version>
+      <version>7.5.1-SNAPSHOT-PROTEGRA-20130118</version>
     </dependency>
 
     <dependency>
