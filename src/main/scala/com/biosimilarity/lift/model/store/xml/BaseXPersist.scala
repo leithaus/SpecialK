@@ -124,7 +124,7 @@ with Schema
 
   private def createDb(clientSession: ClientSession, collectionName: String) =
   {
-    synchronized {
+    pool.lock.synchronized {
       try {
         clientSession.execute(new Open(collectionName))
         clientSession.execute(new Close())

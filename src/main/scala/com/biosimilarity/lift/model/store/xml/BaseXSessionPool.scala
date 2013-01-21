@@ -11,6 +11,8 @@ object BaseXSessionPool {
 
   private val semaphore = new Semaphore(MAX_CREATIONS)
 
+  var lock : AnyRef = new Object()
+
   case class PoolableClientSessionFactory(host: String, port: Int, user: String, pwd: String)
     extends BasePoolableObjectFactory[ClientSession] {
 
