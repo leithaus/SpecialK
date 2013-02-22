@@ -6,8 +6,8 @@ import com.rabbitmq.client._
 object RabbitFactory
 {
   final val guest = new ConnectionFactory()
-  guest.setUsername("guest")
-  guest.setPassword("guest")
+  guest.setUsername("kvdb")
+  guest.setPassword("anywhere")
   guest.setVirtualHost("/")
   guest.setRequestedHeartbeat(0)
 

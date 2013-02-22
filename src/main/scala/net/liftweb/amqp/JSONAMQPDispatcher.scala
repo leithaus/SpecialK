@@ -157,8 +157,8 @@ class JSONAMQPListener( host : String ) {
     "src/main/resources/Log4J.properties";  
 
   val factory = new ConnectionFactory()
-  factory.setUsername("guest")
-  factory.setPassword("guest")
+  factory.setUsername("kvdb")
+  factory.setPassword("anywhere")
   factory.setVirtualHost("/")
   factory.setRequestedHeartbeat(0)
 

@@ -23,8 +23,8 @@ object AMQPDefaults extends AMQPUtilities {
   def getDefaultConnectionFactory(): ConnectionFactory =
   {
     val factory = new ConnectionFactory(  )
-    factory.setUsername("guest")
-    factory.setPassword("guest")
+    factory.setUsername("kvdb")
+    factory.setPassword("anywhere")
     factory.setVirtualHost("/")
     factory.setRequestedHeartbeat(0)
     factory
