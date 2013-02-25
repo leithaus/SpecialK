@@ -13,9 +13,13 @@ class StringAMQPSender(factory: ConnectionFactory, host: String, port: Int, exch
 
 class StringAMQPPublisher(host: String, port: Int, exchange: String, routingKey: String)
 {
+  val factory = RabbitFactory.guest
+  factory.setUsername("kvdb")
+  factory.setPassword("anywhere")
+
   //under the covers
   //  val queueName = exchangeName + "_queue"
-  val amqp = new StringAMQPSender(RabbitFactory.guest, host, port, exchange, routingKey)
+  val amqp = new StringAMQPSender(factory, host, port, exchange, routingKey)
   amqp.start
 
   def send(value: String) =

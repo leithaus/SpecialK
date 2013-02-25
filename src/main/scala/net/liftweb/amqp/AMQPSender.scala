@@ -99,8 +99,8 @@ class StringAMQPSender(cf: ConnectionFactory, host: String, port: Int, exchange:
 class ExampleStringAMQPSender {
   // All of the params, exchanges, and queues are all just example data.
   val factory = new ConnectionFactory()
-  factory.setUsername("guest")
-  factory.setPassword("guest")
+  factory.setUsername("kvdb")
+  factory.setPassword("anywhere")
   factory.setVirtualHost("/")
   factory.setRequestedHeartbeat(0)
 
@@ -118,8 +118,8 @@ object ExampleDirectAMQPSender {
   def send[T](msg: T) {
     // All of the params, exchanges, and queues are all just example data.
     val factory = new ConnectionFactory()
-    factory.setUsername("guest")
-    factory.setPassword("guest")
+    factory.setUsername("kvdb")
+    factory.setPassword("anywhere")
     factory.setVirtualHost("/")
     factory.setRequestedHeartbeat(0)
     send(msg, factory, "localhost", 5672)

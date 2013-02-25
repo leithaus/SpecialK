@@ -1,0 +1,19 @@
+
+
+1.  Open up a command window.
+2. navigate to C:\Working\PDS\Tools\RabbitMQ\rabbitmq_server-2.5.1\sbin (or whereever your rabbit server is installed)
+3. Enter the following commands to add the user to the different nodes: 
+		rabbitmqctl add_user kvdb anywhere
+		rabbitmqctl -n "r4000" add_user kvdb anywhere
+		rabbitmqctl -n "r5000" add_user kvdb anywhere
+		rabbitmqctl -n "r6000" add_user kvdb anywhere
+		rabbitmqctl -n "r6001" add_user kvdb anywhere
+		rabbitmqctl -n "r7000" add_user kvdb anywhere
+4. Enter the following commands to add the permissions for the user to the different nodes: 
+		rabbitmqctl set_permissions kvdb ".*" ".*" ".*" 
+ 		rabbitmqctl set_permissions -n "r4000" kvdb ".*" ".*" ".*" 
+		rabbitmqctl set_permissions -n "r5000" kvdb ".*" ".*" ".*" 
+		rabbitmqctl set_permissions -n "r6000" kvdb ".*" ".*" ".*" 
+		rabbitmqctl set_permissions -n "r6001" kvdb ".*" ".*" ".*" 
+		rabbitmqctl set_permissions -n "r7000" kvdb ".*" ".*" ".*" 
+

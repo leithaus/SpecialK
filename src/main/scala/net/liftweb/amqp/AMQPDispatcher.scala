@@ -171,8 +171,8 @@ class ExampleSerializedAMQPDispatcher[T](factory: ConnectionFactory, host: Strin
  */
 class ExampleStringAMQPListener {
   val factory = new ConnectionFactory()
-  factory.setUsername("guest")
-  factory.setPassword("guest")
+  factory.setUsername("kvdb")
+  factory.setPassword("anywhere")
   factory.setVirtualHost("/")
   factory.setRequestedHeartbeat(0)
 

@@ -26,7 +26,10 @@ class StringAMQPDispatcher(factory: ConnectionFactory, host: String, port: Int, 
 
 class StringAMQPListener(host: String, port: Int, exchange: String, routingKey: String, handleString: ( String ) => Unit)
 {
-  val amqp = new StringAMQPDispatcher(RabbitFactory.guest, host, port, exchange, routingKey)
+  val factory = RabbitFactory.guest
+  factory.setUsername("kvdb")
+  factory.setPassword("anywhere")
+  val amqp = new StringAMQPDispatcher(factory, host, port, exchange, routingKey)
   amqp.start
 
   class StringListener(handler: ( String ) => Unit) extends Actor
