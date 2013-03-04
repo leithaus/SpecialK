@@ -60,7 +60,21 @@ trait ThreadPoolRunners extends TaskRunnersBase
 
   }
 
-  def createDefaultTaskRunner() = new ThreadPoolRunner(numWorkers)
+  def createDefaultTaskRunner(): TaskRunner =
+  {
+    var numThreads:Int = 100
+    try {
+      Configgy.configure("thread.conf")
+
+      @transient lazy val config = Configgy.config
+      if (config != null){
+        numThreads = config.getInt("numThreads", 100);
+      }
+    }catch {
+      case e => e.printStackTrace()
+    }
+    new ThreadPoolRunner(numThreads)
+  }
 }
 
 object TPR extends ThreadPoolRunners {
@@ -72,11 +86,7 @@ object TPR extends ThreadPoolRunners {
       sched.submitTask(() => run(ctx))
     }
   }
-  Configgy.configure("thread.conf")
 
-  @transient lazy val config = Configgy.config
-
-  override def numWorkers = config.getInt("numThreads", 100);
 }
 
 trait ThreadPoolRunnersX {
