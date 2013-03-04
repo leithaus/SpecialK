@@ -2,6 +2,7 @@ package scala.concurrent
 
 import java.util.concurrent.{Executors, ExecutorService, TimeUnit}
 import util.continuations._
+import net.lag.configgy.Configgy
 
 trait ThreadPoolRunners extends TaskRunnersBase
 {
@@ -71,6 +72,11 @@ object TPR extends ThreadPoolRunners {
       sched.submitTask(() => run(ctx))
     }
   }
+  Configgy.configure("thread.conf")
+
+  @transient lazy val config = Configgy.config
+
+  override def numWorkers = config.getInt("numThreads", 100);
 }
 
 trait ThreadPoolRunnersX {
