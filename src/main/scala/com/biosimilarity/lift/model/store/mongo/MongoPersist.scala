@@ -410,8 +410,17 @@ with StdMongoStoreConfiguration
     clientSession.getDB( defaultDB )( collectionName ).remove( deleteKey )
   }
 
-  def count( collectionName : String ) : Int = {
-    throw new NotImplementedException
+  def count( collectionName : String, query : String ): String =
+    wrapAction(
+      ( clientSession : MongoClient, collectionName : String ) => {
+        _count( clientSession, collectionName, query )
+      }
+    )( collectionName )
+
+  def _count( clientSession : MongoClient, collectionName : String, query : String ) : String = {
+    val qry = JSON.parse( query ).asInstanceOf[DBObject]
+    val mc = clientSession.getDB( defaultDB )( collectionName )
+    mc.count( qry ).toString
   }
 
 
