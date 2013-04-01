@@ -17,7 +17,7 @@ import java.net.URI
 object MongoConfigInfo
 extends MongoStoreConfiguration
 with URIFromConfigurationT {  
-  override def configFileName: Option[String] = None
+  override def configFileName: Option[String] = Some("kvdb_mongo.conf")
   override def configurationDefaults: ConfigurationDefaults =
     MongoDefaults.asInstanceOf[ConfigurationDefaults]
   override def defaultSchemeFromConfiguration : String = 
