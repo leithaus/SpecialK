@@ -3037,23 +3037,23 @@ package usage {
     import scala.concurrent.{Channel=>Chan, _}
 
     object ExerciseMongo {
-      import PersistedMonadicKVDBMongoNet._   
+      import PersistedMonadicKVDBMongoNet._
       import Being._
       import PersistedMongoMolecularUseCase._
       import KinaseSpecifications._
-      
+
       val node1 =
 	setup[PersistedKVDBNodeRequest,PersistedKVDBNodeResponse](
 	  "localhost", 5672, "localhost", 5672
 	) match {
-	  case Left( n ) => n 
+	  case Left( n ) => n
 	  case _ => throw new Exception( "!" )
 	}
       val pd1 =
 	node1.cache.persistenceManifest.getOrElse(
 	  throw new Exception( "!" )
 	).asInstanceOf[MongoDBManifest]
-      
+
       val kinasePtnRAF = molPtnMap( RAFProto )
       val kamtRAF = cellCytoplasm.amt( kinasePtnRAF )
       val knsRAF1 = RAFProto.update( 1 )
@@ -3061,9 +3061,9 @@ package usage {
       val rcrd1 =
 	node1.cache.asStoreRecord(
 	  RAFQry1, 1.0
-	).getOrElse( throw new Exception( "!" ) )  
+	).getOrElse( throw new Exception( "!" ) )
       val mrcrd1 =
-	node1.cache.toMongoObject(
+        node1.cache.CnxnMongoStrObjectifier.toMongoObject(
 	  rcrd1
 	)(
 	  node1.cache.nameSpaceToString,
@@ -3090,9 +3090,9 @@ package usage {
       }
       def doPublish() = {
 	reset { node1.publish( RAFQry1, 10.0 ) }
-      }      
+      }
     }
-    
+
    object MongoDetails {
      import ExerciseMongo._
      import com.biosimilarity.lift.model.store.mongo._
@@ -3134,6 +3134,6 @@ package usage {
        println( mc1 )
      }
    }
-    
+
   }
 }

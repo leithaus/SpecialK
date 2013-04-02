@@ -169,7 +169,7 @@ object MongoClientPool {
 
 trait BaseMongoPersist[Namespace,Var,Tag]
 extends Persist[MongoClient,DBObject]
-with MongoResultsParser[Namespace,Var,Tag]
+//with MongoResultsParser[Namespace,Var,Tag]
 with StdMongoStoreConfiguration
 { 
   @transient
