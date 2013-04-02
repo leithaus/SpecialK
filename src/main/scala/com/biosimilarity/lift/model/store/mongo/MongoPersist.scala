@@ -123,20 +123,20 @@ trait StdMongoStoreConfiguration extends MongoStoreConfigurationProxy {
   override final val underlyingConfiguration = MongoConfigInfo
 }
 
-trait MongoResultsParser[Namespace,Var,Tag]
-extends CnxnMongoObject[Namespace,Var,Tag]
-with CnxnCtxtInjector[Namespace,Var,Tag]
-with CnxnString[Namespace,Var,Tag]
-with Blobify with UUIDOps {
-  implicit def fromString( s : String ) : CnxnCtxtLabel[String,String,String] = {
-    fromTermString( s ) match {
-      case Some( ccl ) => ccl.asInstanceOf[CnxnCtxtLabel[String,String,String]];
-      case None => throw new Exception( "failed to parse" )
-    }
-  }
-}
+//trait MongoResultsParser[Namespace,Var,Tag]
+//extends CnxnMongoObject[Namespace,Var,Tag]
+//with CnxnCtxtInjector[Namespace,Var,Tag]
+//with CnxnString[Namespace,Var,Tag]
+//with Blobify with UUIDOps {
+////  implicit def fromString( s : String ) : CnxnCtxtLabel[String,String,String] = {
+////    fromTermString( s ) match {
+////      case Some( ccl ) => ccl.asInstanceOf[CnxnCtxtLabel[String,String,String]];
+////      case None => throw new Exception( "failed to parse" )
+////    }
+////  }
+//}
 
-trait MongoStringResultsParser extends MongoResultsParser[String,String,String]
+//trait MongoStringResultsParser extends MongoResultsParser[String,String,String]
 
 object MongoClientPool {
   import java.util.concurrent.ConcurrentHashMap
@@ -613,6 +613,8 @@ package usage {
   }
   object SimpleMongoPersist extends BaseMongoPersist[String,String,String] {    
     import DataSet._
-    val userProfileCCL : CnxnCtxtLabel[String,String,String] = userProfileStr
+    import com.biosimilarity.lift.lib.extensions.StringExtensions._
+
+    val userProfileCCL : CnxnCtxtLabel[String,String,String] = userProfileStr.toLabel
   }
 }

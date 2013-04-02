@@ -1,7 +1,7 @@
 package com.biosimilarity.lift.lib.extensions
 
 import org.specs2.mutable._
-import StringExtensions._
+import com.biosimilarity.lift.lib.extensions.StringExtensions._
 
 class CnxnXQueryParserTest extends SpecificationWithJUnit {
 
