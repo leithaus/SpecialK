@@ -7,7 +7,7 @@
 // ------------------------------------------------------------------------
 
 package com.biosimilarity.lift.lib.term.conversion
-
+{
 import com.biosimilarity.lift.lib.term.Prolog._
 import com.biosimilarity.lift.lib.term.Prolog.Absyn.{Predicate => PrologPredicate,_}
 import com.biosimilarity.lift.model.store._
@@ -574,4 +574,5 @@ package usage {
       }
     }
   }
+}
 }
