@@ -20,7 +20,7 @@ class CnxnXQueryParserTest extends SpecificationWithJUnit
         println("results:"  + results)
       }
       catch {
-        case e: Throwable => {e.printStackTrace()}
+        case e: Exception => {e.printStackTrace()}
       }
       success
     }
@@ -33,7 +33,7 @@ class CnxnXQueryParserTest extends SpecificationWithJUnit
         println("results:"  + results)
       }
       catch {
-        case e: Throwable => {e.printStackTrace()}
+        case e: Exception => {e.printStackTrace()}
       }
       success
     }
