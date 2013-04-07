@@ -5,6 +5,7 @@ import com.biosimilarity.lift.lib.extensions.StringExtensions._
 import com.biosimilarity.lift.lib.term.Prolog._
 import com.biosimilarity.lift.lib.term.Prolog.Absyn._
 import com.biosimilarity.lift.lib.term.conversion.usage.TermToCCLStr
+import java.util.UUID
 
 class CnxnXQueryParserTest extends SpecificationWithJUnit
 {
@@ -47,6 +48,18 @@ class CnxnXQueryParserTest extends SpecificationWithJUnit
       }
       catch {
         case e: Exception => {e.printStackTrace()}
+      }
+      success
+    }
+
+    "work with a UUID" in {
+      try {
+        val value = "contentChannel(\"" + UUID.randomUUID.toString + "\")"
+        val lbl = value.toLabel
+        println("lbl is: " + lbl)
+      }
+      catch {
+        case e: Throwable => {e.printStackTrace()}
       }
       success
     }
