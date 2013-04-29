@@ -1,6 +1,6 @@
 // -*- mode: Scala;-*- 
 // Filename:    exercise.scala 
-// Authors:     lgm                                                    
+// Authors:     lgm
 // Creation:    Tue May 25 17:09:06 2010 
 // Copyright:   Not supplied 
 // Description: 

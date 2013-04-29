@@ -49,28 +49,28 @@ trait CnxnNavigation[L,V,T] extends ZipperNavigation[Either[T,V]] {
         throw new Exception( "up of top" )
       }   
       case Location( t : CnxnCtxtLabel[L,V,T] with Factual, LabeledTreeContext( lbl : L, left, up, right ) ) => {
-	( left, right ) match {
-	  case ( lTerms : List[CnxnCtxtLabel[L,V,T] with Factual], rTerms : List[CnxnCtxtLabel[L,V,T] with Factual] ) => {
-	    val rvrsLTerms : List[CnxnCtxtLabel[L,V,T] with Factual] = lTerms.reverse
+        ( left, right ) match {
+          case ( lTerms : List[CnxnCtxtLabel[L,V,T] with Factual], rTerms : List[CnxnCtxtLabel[L,V,T] with Factual] ) => {
+            val rvrsLTerms : List[CnxnCtxtLabel[L,V,T] with Factual] = lTerms.reverse
             Location[A1]( new CnxnCtxtBranch[L,V,T]( lbl, rvrsLTerms ::: ( t :: rTerms ) ), up )
-	  }
-	  case _ => throw new Exception( "unexpected location shape: " + location )
-	}
+          }
+          case _ => throw new Exception( "unexpected location shape: " + location )
+        }
       }
       case Location( t, ctxt ) => {
-	/*
-	 println(
-	  (
-	    "/* ------------------------------------------------------- */\n"
-	    + "/* method: " + "up" + " */\n"
-	    + "/* location: " + location + " */\n"
-	    + "/* location.tree: " + location.tree + "; class: " + location.tree.getClass + " */\n"
-	    + "/* location.ctxt: " + location.ctxt + "; class: " + location.ctxt.getClass +" */\n"
-	    + "/* ------------------------------------------------------- */\n"
-	  )
-	)
-	*/
-	throw new Exception( "unmatched location shape: " + location )
+        /* 
+         println(
+          (
+            "/* ------------------------------------------------------- */\n"
+            + "/* method: " + "up" + " */\n"
+            + "/* location: " + location + " */\n"
+            + "/* location.tree: " + location.tree + "; class: " + location.tree.getClass + " */\n"
+            + "/* location.ctxt: " + location.ctxt + "; class: " + location.ctxt.getClass +" */\n"
+            + "/* ------------------------------------------------------- */\n"
+          )
+        ) 
+        */ 
+        throw new Exception( "unmatched location shape: " + location )
       }
     }
   }
@@ -96,7 +96,7 @@ trait CnxnMutation[L,V,T] extends ZipperMutation[Either[T,V]] {
   ) : Location[Either[T,V]] = {
     location match {
       case Location( _, ctxt ) =>
-	Location( tree, ctxt )
+        Location( tree, ctxt )
     }
   }
   def insertRight(
@@ -105,16 +105,16 @@ trait CnxnMutation[L,V,T] extends ZipperMutation[Either[T,V]] {
   ) : Location[Either[T,V]] = {
     location match {
       case Location( _, Top( ) ) => {
-	throw new Exception( "insert of top" )
+        throw new Exception( "insert of top" )
       }
       case Location(
-	curr,
-	LabeledTreeContext( lbl : L, left, up, right )
+        curr,
+        LabeledTreeContext( lbl : L, left, up, right )
       ) => {
-	Location(
-	  curr,
-	  LabeledTreeContext[L,Either[T,V]]( lbl, left, up, tree :: right )
-	)	
+        Location(
+          curr,
+          LabeledTreeContext[L,Either[T,V]]( lbl, left, up, tree :: right )
+        )       
       }
     }    
   }
@@ -123,16 +123,16 @@ trait CnxnMutation[L,V,T] extends ZipperMutation[Either[T,V]] {
   ) : Location[Either[T,V]] = {
     location match {
       case Location( _, Top( ) ) => {
-	throw new Exception( "insert of top" )
+        throw new Exception( "insert of top" )
       }
       case Location(
-	curr,
-	LabeledTreeContext( lbl : L, left, up, right )
+        curr,
+        LabeledTreeContext( lbl : L, left, up, right )
       ) => {
-	Location(
-	  curr,
-	  LabeledTreeContext[L,Either[T,V]]( lbl, tree :: left, up, right )
-	)	
+        Location(
+          curr,
+          LabeledTreeContext[L,Either[T,V]]( lbl, tree :: left, up, right )
+        )       
       }
     }    
   }
@@ -141,44 +141,44 @@ trait CnxnMutation[L,V,T] extends ZipperMutation[Either[T,V]] {
   ) : Location[Either[T,V]] = {
     location match {
       case Location( TreeItem( _ ), _ ) => {
-	throw new Exception( "down of item" )
+        throw new Exception( "down of item" )
       }
       case Location(
-	CnxnCtxtBranch( lbl : L, progeny ),
-	ctxt@Top()
+        CnxnCtxtBranch( lbl : L, progeny ),
+        ctxt@Top()
       ) => {
-	Location(
-	  tree,
-	  LabeledTreeContext[L,Either[T,V]]( lbl, List[CnxnCtxtLabel[L,V,T] with Factual](), ctxt, progeny )
-	)
+        Location(
+          tree,
+          LabeledTreeContext[L,Either[T,V]]( lbl, List[CnxnCtxtLabel[L,V,T] with Factual](), ctxt, progeny )
+        )
       }
       case Location(
-	CnxnCtxtBranch( lbl : L, progeny ),
-	ctxt : LabeledTreeContext[L,Either[T,V]]
+        CnxnCtxtBranch( lbl : L, progeny ),
+        ctxt : LabeledTreeContext[L,Either[T,V]]
       ) => {
-	Location(
-	  tree,
-	  LabeledTreeContext[L,Either[T,V]]( lbl, List[CnxnCtxtLabel[L,V,T] with Factual](), ctxt, progeny )
-	)
+        Location(
+          tree,
+          LabeledTreeContext[L,Either[T,V]]( lbl, List[CnxnCtxtLabel[L,V,T] with Factual](), ctxt, progeny )
+        )
       }
       case Location(
-	t,
-	ctxt
+        t,
+        ctxt
       ) => {
-	/*
-	 println(
-	  (
-	    "/* ------------------------------------------------------- */\n"
-	    + "/* method: " + "insertDown" + " */\n"
-	    + "/* location: " + location + " */\n"
-	    + "/* location.tree: " + location.tree + "; class: " + location.tree.getClass + " */\n"
-	    + "/* location.ctxt: " + location.ctxt + "; class: " + location.ctxt.getClass +" */\n"
-	    + "/* tree: " + tree + "; class: " + location.ctxt.getClass + " */\n"
-	    + "/* ------------------------------------------------------- */\n"
-	  )
-	)
-	*/
-	throw new Exception( "unmatched location shape: " + location )
+        /*
+         println(
+          (
+            "/* ------------------------------------------------------- */\n"
+            + "/* method: " + "insertDown" + " */\n"
+            + "/* location: " + location + " */\n"
+            + "/* location.tree: " + location.tree + "; class: " + location.tree.getClass + " */\n"
+            + "/* location.ctxt: " + location.ctxt + "; class: " + location.ctxt.getClass +" */\n"
+            + "/* tree: " + tree + "; class: " + location.ctxt.getClass + " */\n"
+            + "/* ------------------------------------------------------- */\n"
+          )
+        )
+        */
+        throw new Exception( "unmatched location shape: " + location )
       }
     }
   }
@@ -187,31 +187,31 @@ trait CnxnMutation[L,V,T] extends ZipperMutation[Either[T,V]] {
   ) : Location[Either[T,V]] = {
     location match {
       case Location( _, Top( ) ) => {
-	throw new Exception( "delete of top" )
+        throw new Exception( "delete of top" )
       }
       case Location(
-	_,
-	LabeledTreeContext( lbl : L, left, up, r :: right )
+        _,
+        LabeledTreeContext( lbl : L, left, up, r :: right )
       ) => {
-	Location(
-	  r,
-	  LabeledTreeContext[L, Either[T,V]]( lbl, left, up, right )
-	)
+        Location(
+          r,
+          LabeledTreeContext[L, Either[T,V]]( lbl, left, up, right )
+        )
       }
       case Location(
-	_,
-	LabeledTreeContext( lbl : L, l :: left, up, Nil )
+        _,
+        LabeledTreeContext( lbl : L, l :: left, up, Nil )
       ) => {
-	Location(
-	  l,
-	  LabeledTreeContext[L, Either[T,V]]( lbl, left, up, Nil )
-	)
+        Location(
+          l,
+          LabeledTreeContext[L, Either[T,V]]( lbl, left, up, Nil )
+        )
       }
       case Location(
-	_,
-	LabeledTreeContext( lbl : L, Nil, up, Nil )
+        _,
+        LabeledTreeContext( lbl : L, Nil, up, Nil )
       ) => {
-	Location( new CnxnCtxtBranch[L,V,T]( lbl, List[CnxnCtxtLabel[L,V,T] with Factual]() ), up )
+        Location( new CnxnCtxtBranch[L,V,T]( lbl, List[CnxnCtxtLabel[L,V,T] with Factual]() ), up )
       }
     }
   }
@@ -225,9 +225,9 @@ trait CnxnZipperComposition[L,V,T] {
     ctxtL match {
       case Top() => ctxtR
       case LabeledTreeContext( lbl : L, left : List[CnxnCtxtLabel[L,V,T] with Factual], ctxt : LabeledTreeContext[L, Either[T,V]], right : List[CnxnCtxtLabel[L,V,T] with Factual] ) => {
-	LabeledTreeContext[L,Either[T,V]](
-	  lbl, left, compose( ctxt, ctxtR ), right 
-	)
+        LabeledTreeContext[L,Either[T,V]](
+          lbl, left, compose( ctxt, ctxtR ), right 
+        )
       }
     }
   }
@@ -238,17 +238,17 @@ trait CnxnZipperComposition[L,V,T] {
     ctxt match {
       case Top() => tree
       case LabeledTreeContext( lbl : L, left : List[CnxnCtxtLabel[L,V,T] with Factual], ctxt : LabeledTreeContext[L, Either[T,V]], right : List[CnxnCtxtLabel[L,V,T] with Factual] ) => {
-	new CnxnCtxtBranch[L,V,T](
-	  lbl, 
-	  left ++ ( compose( ctxt, tree ) :: right )
-	)
+        new CnxnCtxtBranch[L,V,T](
+          lbl, 
+          left ++ ( compose( ctxt, tree ) :: right )
+        )
       }
     }
   }
   def decontextualize( location : Location[Either[T,V]] ) : CnxnCtxtLabel[L,V,T] with Factual = {
     location match {
       case Location( tree : CnxnCtxtLabel[L,V,T] with Factual, ctxt ) => {
-	compose( ctxt, tree )
+        compose( ctxt, tree )
       }
       case _ => throw new Exception( "unexpected location shape: " + location )
     }
@@ -284,124 +284,124 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
      println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "combine" + " */\n"
-	+ "/* x: " + x + " */\n"
-	+ "/* y: " + y + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "combine" + " */\n"
+        + "/* x: " + x + " */\n"
+        + "/* y: " + y + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
     
     val rslt =
       for( 
-	xLoc@Location( xTerm : CnxnCtxtLabel[N,X,T], xCtxt ) <- x;
-	yLoc@Location( yTerm : CnxnCtxtLabel[N,X,T], yCtxt ) <- y
+        xLoc@Location( xTerm : CnxnCtxtLabel[N,X,T], xCtxt ) <- x;
+        yLoc@Location( yTerm : CnxnCtxtLabel[N,X,T], yCtxt ) <- y
       ) yield {
-	/*
-	 println(
-	  (
-	    "/* ------------------------------------------------------- */\n"
-	    + "/* method: " + "combine" + " continued" + " */\n"
-	    + "/* xLoc: " + xLoc + " */\n"
-	    + "/* yLoc: " + yLoc + " */\n"
-	    + "/* ------------------------------------------------------- */\n"
-	  )
-	)
-	*/
-	yLoc match {
-	  case Location( CnxnCtxtLeaf( Right( v ) ), Top( ) ) => xLoc
-	  case Location( _, Top( ) ) => {
-	    xCtxt match {
-	      case Top() => {
-		val loc = zipr.up( zipr.insertDown( yLoc, xTerm ) )
-		/*
-		 * println(
-		  (
-		    "/* ------------------------------------------------------- */\n"
-		    + "/* method: " + "combine" + " continued" + " */\n"
-		    + "/* loc: " + loc + " */\n"
-		    + "/* ------------------------------------------------------- */\n"
-		  )
-		)
-		*/
-		    
-		loc
-	      }
-	      case _ => {
-		val loc = zipr.update( yLoc, xTerm )
-		/*
-		 println(
-		  (
-		    "/* ------------------------------------------------------- */\n"
-		    + "/* method: " + "combine" + " continued" + " */\n"
-		    + "/* loc: " + loc + " */\n"
-		    + "/* ------------------------------------------------------- */\n"
-		  )
-		)
-		*/
-		
-		loc
-	      }
-	    }	    
-	  }
-	  case _ => {
-	    xLoc match {	      
-	      case Location( CnxnCtxtLeaf( Right( v ) ), Top() ) => {
-		val loc = zipr.update( yLoc, xTerm )
-		/*
-		 println(
-		  (
-		    "/* ------------------------------------------------------- */\n"
-		    + "/* method: " + "combine" + " continued" + " */\n"
-		    + "/* loc: " + loc + " */\n"
-		    + "/* ------------------------------------------------------- */\n"
-		  )
-		)
-		*/
-		  		
-		if ( v2str( v ).equals( theContextVar ) ) {		
-		  loc
-		}
-		else {
-		  zipr.up( loc )
-		}		
-	      }
-	      case Location( _, Top() ) => {
-		val loc = zipr.up( zipr.update( yLoc, xTerm ) )
-		/*
-		 println(
-		  (
-		    "/* ------------------------------------------------------- */\n"
-		    + "/* method: " + "combine" + " continued" + " */\n"
-		    + "/* loc: " + loc + " */\n"
-		    + "/* ------------------------------------------------------- */\n"
-		  )
-		)
-		*/
-		
-		loc
-	      }
-	      case Location( _, LabeledTreeContext( lbl : N, left, nrCtxt, right ) ) => {
-		Location[Either[T,X]](
-		  xTerm,
-		  zipr.compose( yCtxt, xCtxt )
-		)
-	      }
-	    }
-	  }
-	}
-			
+        /*
+         println(
+          (
+            "/* ------------------------------------------------------- */\n"
+            + "/* method: " + "combine" + " continued" + " */\n"
+            + "/* xLoc: " + xLoc + " */\n"
+            + "/* yLoc: " + yLoc + " */\n"
+            + "/* ------------------------------------------------------- */\n"
+          )
+        )
+        */
+        yLoc match {
+          case Location( CnxnCtxtLeaf( Right( v ) ), Top( ) ) => xLoc
+          case Location( _, Top( ) ) => {
+            xCtxt match {
+              case Top() => {
+                val loc = zipr.up( zipr.insertDown( yLoc, xTerm ) )
+                /*
+                 * println(
+                  (
+                    "/* ------------------------------------------------------- */\n"
+                    + "/* method: " + "combine" + " continued" + " */\n"
+                    + "/* loc: " + loc + " */\n"
+                    + "/* ------------------------------------------------------- */\n"
+                  )
+                )
+                */
+                    
+                loc
+              }
+              case _ => {
+                val loc = zipr.update( yLoc, xTerm )
+                /*
+                 println(
+                  (
+                    "/* ------------------------------------------------------- */\n"
+                    + "/* method: " + "combine" + " continued" + " */\n"
+                    + "/* loc: " + loc + " */\n"
+                    + "/* ------------------------------------------------------- */\n"
+                  )
+                )
+                */
+                
+                loc
+              }
+            }       
+          }
+          case _ => {
+            xLoc match {              
+              case Location( CnxnCtxtLeaf( Right( v ) ), Top() ) => {
+                val loc = zipr.update( yLoc, xTerm )
+                /*
+                 println(
+                  (
+                    "/* ------------------------------------------------------- */\n"
+                    + "/* method: " + "combine" + " continued" + " */\n"
+                    + "/* loc: " + loc + " */\n"
+                    + "/* ------------------------------------------------------- */\n"
+                  )
+                )
+                */
+                                
+                if ( v2str( v ).equals( theContextVar ) ) {             
+                  loc
+                }
+                else {
+                  zipr.up( loc )
+                }               
+              }
+              case Location( _, Top() ) => {
+                val loc = zipr.up( zipr.update( yLoc, xTerm ) )
+                /*
+                 println(
+                  (
+                    "/* ------------------------------------------------------- */\n"
+                    + "/* method: " + "combine" + " continued" + " */\n"
+                    + "/* loc: " + loc + " */\n"
+                    + "/* ------------------------------------------------------- */\n"
+                  )
+                )
+                */
+                
+                loc
+              }
+              case Location( _, LabeledTreeContext( lbl : N, left, nrCtxt, right ) ) => {
+                Location[Either[T,X]](
+                  xTerm,
+                  zipr.compose( yCtxt, xCtxt )
+                )
+              }
+            }
+          }
+        }
+                        
       }
 
     /*
      println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "combine" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "combine" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -417,29 +417,29 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
      println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
     
     val rslt =
       combine(
-	p.atom_.accept( this, context ),
-	wrap( context ),
-	context
+        p.atom_.accept( this, context ),
+        wrap( context ),
+        context
       )
 
     /*
      println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -454,11 +454,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
      println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -472,20 +472,20 @@ class TermToCnxnCtxtLabel[N,X,T](
     
     val rslt =
       ( loc /: terms )(
-	{ 
-	  ( acc, e ) => {
-	    combine( e.accept( this, context ), acc, context )
-	  }
-	}
+        { 
+          ( acc, e ) => {
+            combine( e.accept( this, context ), acc, context )
+          }
+        }
       )
 
     /*
      println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -502,11 +502,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
      println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -517,10 +517,10 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -535,11 +535,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -550,10 +550,10 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -568,11 +568,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -586,20 +586,20 @@ class TermToCnxnCtxtLabel[N,X,T](
     
     val rslt =
       ( loc /: terms )(
-	{ 
-	  ( acc, e ) => {
-	    combine( e.accept( this, context ), acc, context )
-	  }
-	}
+        { 
+          ( acc, e ) => {
+            combine( e.accept( this, context ), acc, context )
+          }
+        }
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -614,11 +614,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -629,10 +629,10 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -649,32 +649,32 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     val rslt = 
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T](
-	    Left[T,X]( text2t( p.lident_ ) )
-	  ),
-	  Top()
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T](
+            Left[T,X]( text2t( p.lident_ ) )
+          ),
+          Top()
+        )
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -689,32 +689,32 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     val rslt =
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T](
-	    Left[T,X]( text2t( p.ident_ ) )
-	  ),
-	  Top()
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T](
+            Left[T,X]( text2t( p.ident_ ) )
+          ),
+          Top()
+        )
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -729,11 +729,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -744,10 +744,10 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -762,36 +762,36 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     // val str =
 //       ( p.string_( 0 ), p.string_( p.string_.length - 1 ) ) match {
-// 	case ( '"', '"' ) => p.string_
-// 	case _ => "\"" + p.string_ + "\""
+//      case ( '"', '"' ) => p.string_
+//      case _ => "\"" + p.string_ + "\""
 //       }
 
     val rslt =
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T]( Left[T,X]( text2t( p.string_ ) ) ),
-	  Top()
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T]( Left[T,X]( text2t( p.string_ ) ) ),
+          Top()
+        )
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -806,32 +806,32 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     val rslt =
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T](
-	    Left[T,X]( text2t( p.integer_.toString ) )
-	  ),
-	  Top()
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T](
+            Left[T,X]( text2t( p.integer_.toString ) )
+          ),
+          Top()
+        )
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -846,32 +846,32 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     val rslt =
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T](
-	    Left[T,X]( text2t( p.double_.toString ) )
-	  ),
-	  Top()
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T](
+            Left[T,X]( text2t( p.double_.toString ) )
+          ),
+          Top()
+        )
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -888,37 +888,37 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     val rslt =
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T](
-	    Right[T,X]( text2v( "_" ) )
-	  ),
-	  LabeledTreeContext[N,Either[T,X]](
-	    text2ns( p.lident_ ),
-	    List[CnxnCtxtLabel[N,X,T] with Factual](),
-	    Top(),
-	    List[CnxnCtxtLabel[N,X,T] with Factual]()
-	  )
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T](
+            Right[T,X]( text2v( "_" ) )
+          ),
+          LabeledTreeContext[N,Either[T,X]](
+            text2ns( p.lident_ ),
+            List[CnxnCtxtLabel[N,X,T] with Factual](),
+            Top(),
+            List[CnxnCtxtLabel[N,X,T] with Factual]()
+          )
+        )
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -935,32 +935,32 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     val rslt = 
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T](
-	    Left[T,X]( text2t( "true" ) )
-	  ),
-	  Top()
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T](
+            Left[T,X]( text2t( "true" ) )
+          ),
+          Top()
+        )
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -975,32 +975,32 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     val rslt = 
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T](
-	    Left[T,X]( text2t( "false" ) )
-	  ),
-	  Top()
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T](
+            Left[T,X]( text2t( "false" ) )
+          ),
+          Top()
+        )
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1017,32 +1017,32 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     val rslt =
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T](
-	    Right[T,X]( text2v( p.uident_ ) )
-	  ),
-	  Top()
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T](
+            Right[T,X]( text2v( p.uident_ ) )
+          ),
+          Top()
+        )
       )      
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1057,32 +1057,32 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
 
     val rslt =
       Some(
-	Location[Either[T,X]](
-	  new CnxnCtxtLeaf[N,X,T](
-	    Right[T,X]( text2v( p.wild_ ) )
-	  ),
-	  Top()
-	)
+        Location[Either[T,X]](
+          new CnxnCtxtLeaf[N,X,T](
+            Right[T,X]( text2v( p.wild_ ) )
+          ),
+          Top()
+        )
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1099,11 +1099,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1113,10 +1113,10 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1131,11 +1131,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1147,20 +1147,20 @@ class TermToCnxnCtxtLabel[N,X,T](
     
     val rslt =
       ( wrap( context ) /: terms )(
-	{ 
-	  ( acc, e ) => {
-	    combine( e.accept( this, context ), acc, context )
-	  }
-	}
+        { 
+          ( acc, e ) => {
+            combine( e.accept( this, context ), acc, context )
+          }
+        }
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1175,11 +1175,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1190,24 +1190,24 @@ class TermToCnxnCtxtLabel[N,X,T](
 
     val rslt =
       combine(
-	p.lyst_.accept( this, context ),
-	( wrap( context ) /: terms )(
-	  { 
-	    ( acc, e ) => {
-	      combine( e.accept( this, context ), acc, context )
-	    }
-	  }
-	),
-	context 
+        p.lyst_.accept( this, context ),
+        ( wrap( context ) /: terms )(
+          { 
+            ( acc, e ) => {
+              combine( e.accept( this, context ), acc, context )
+            }
+          }
+        ),
+        context 
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1222,11 +1222,11 @@ class TermToCnxnCtxtLabel[N,X,T](
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " */\n"
-	+ "/* p: " + p + " */\n"
-	+ "/* context: " + context + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " */\n"
+        + "/* p: " + p + " */\n"
+        + "/* context: " + context + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1237,24 +1237,24 @@ class TermToCnxnCtxtLabel[N,X,T](
 
     val rslt =
       combine(
-	p.var_.accept( this, context ),
-	( wrap( context ) /: terms )(
-	  { 
-	    ( acc, e ) => {
-	      combine( e.accept( this, context ), acc, context )
-	    }
-	  }
-	),
-	context
+        p.var_.accept( this, context ),
+        ( wrap( context ) /: terms )(
+          { 
+            ( acc, e ) => {
+              combine( e.accept( this, context ), acc, context )
+            }
+          }
+        ),
+        context
       )
 
     /*
     println(
       (
-	"/* ------------------------------------------------------- */\n"
-	+ "/* method: " + "visit" + " continued" + " */\n"
-	+ "/* rslt: " + rslt + " */\n"
-	+ "/* ------------------------------------------------------- */\n"
+        "/* ------------------------------------------------------- */\n"
+        + "/* method: " + "visit" + " continued" + " */\n"
+        + "/* rslt: " + rslt + " */\n"
+        + "/* ------------------------------------------------------- */\n"
       )
     )
     */
@@ -1287,9 +1287,9 @@ object TermToCnxnCtxtLabel {
   )] = {
     Some(
       (
-	xform.text2ns, xform.text2v, xform.text2t,
-	xform.ns2str, xform.v2str, xform.t2str,
-	xform.zipr, xform.theContextVar
+        xform.text2ns, xform.text2v, xform.text2t,
+        xform.ns2str, xform.v2str, xform.t2str,
+        xform.zipr, xform.theContextVar
       )
     )
   }
@@ -1316,23 +1316,23 @@ package usage {
   ) {
     def strToTerm( s : String ) : CnxnCtxtLabel[String,String,String] = {
       val ast = 
-	new parser( new Yylex( new java.io.StringReader( s ) ) ).pPredicate()
+        new parser( new Yylex( new java.io.StringReader( s ) ) ).pPredicate()
       val loc : Location[Either[String,String]] =
-	Location[Either[String,String]]( 
-	  new CnxnCtxtLeaf[String,String,String]( Right[String,String]( text2v( "_" ) ) ),
-	  Top()
-	)
+        Location[Either[String,String]]( 
+          new CnxnCtxtLeaf[String,String,String]( Right[String,String]( text2v( "_" ) ) ),
+          Top()
+        )
       val ctxt : Option[Location[Either[String,String]]] = Some( loc )
 
       val xformedTerm =
-	ast match {
-	  case apred : APred => visit( apred, ctxt )
-	  case cpred : CPred => visit( cpred, ctxt )
-	}
+        ast match {
+          case apred : APred => visit( apred, ctxt )
+          case cpred : CPred => visit( cpred, ctxt )
+        }
 
       xformedTerm match {
-	case Some( loc ) => zipr.decontextualize( loc )
-	case None => throw new Exception( "xform failed: " + ast )
+        case Some( loc ) => zipr.decontextualize( loc )
+        case None => throw new Exception( "xform failed: " + ast )
       }
     }
   }

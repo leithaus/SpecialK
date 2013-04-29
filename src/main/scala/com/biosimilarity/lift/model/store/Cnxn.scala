@@ -21,13 +21,13 @@ extends Tree[Tag] with SeqProxy[Either[Tag,CnxnLabel[Namespace,Tag]]]
     tOrC match {
       case Left( t ) => List( t )
       case Right( CnxnBranch( ns, lbls ) ) => {
-	( List[Tag]() /: lbls.flatMap( _.self ) )(
-	  {
-	    ( acc, e ) => {
-	      acc ++ up/*[Tag1]*/( e )
-	    }
-	  }
-	)
+        ( List[Tag]() /: lbls.flatMap( _.self ) )(
+          {
+            ( acc, e ) => {
+              acc ++ up/*[Tag1]*/( e )
+            }
+          }
+        )
       }
     }
   }
@@ -114,14 +114,14 @@ extends CnxnLabel[Either[Namespace,Var],Either[Tag,Var]] {
       case Left( t ) => List( t )
       case Right( CnxnCtxtLeaf( tOrV ) ) => List( tOrV )
       case Right( CnxnCtxtBranch( ns, lbls ) ) => {
-	val selves : List[U/*[Tag1]*/] = lbls.flatMap( _.self )
-	( List[Either[Tag,Var]]() /: selves )(
-	  {
-	    ( acc, e ) => {
-	      acc ++ up/*[Tag1]*/( e )
-	    }
-	  }
-	)
+        val selves : List[U/*[Tag1]*/] = lbls.flatMap( _.self )
+        ( List[Either[Tag,Var]]() /: selves )(
+          {
+            ( acc, e ) => {
+              acc ++ up/*[Tag1]*/( e )
+            }
+          }
+        )
       }
     }
   }  
@@ -129,12 +129,12 @@ extends CnxnLabel[Either[Namespace,Var],Either[Tag,Var]] {
   def names : Seq[Either[Tag,Var]] = {
     atoms filter(
       {
-	( ctxtLbl ) => {
-	  ctxtLbl match { 
-	    case Left( _ ) => false
-	    case Right( _ ) => true
-	  }
-	}
+        ( ctxtLbl ) => {
+          ctxtLbl match { 
+            case Left( _ ) => false
+            case Right( _ ) => true
+          }
+        }
       }
     )
   }
@@ -184,16 +184,16 @@ extends CnxnCtxtLabel[Namespace,Var,Tag] {
   override def toString = {
     val lblStr =
       labels match {
-	case albl :: rlbls => {
-	  ( albl.toString /: rlbls )( 
-	    {
-	      ( acc, lbl ) => {
-		acc + ", " + lbl
-	      }
-	    }
-	  )
-	}
-	case Nil => ""
+        case albl :: rlbls => {
+          ( albl.toString /: rlbls )( 
+            {
+              ( acc, lbl ) => {
+                acc + ", " + lbl
+              }
+            }
+          )
+        }
+        case Nil => ""
       }
     nameSpace + "(" + lblStr + ")"
   }
@@ -212,10 +212,10 @@ with Factual {
   override def equals( o : Any ) : Boolean = {
     o match {
       case that : CnxnCtxtBranch[Namespace,Var,Tag] => {
-	(
-	  nameSpace.equals( that.nameSpace )
-	  && factuals.equals( that.factuals ) 
-	)
+        (
+          nameSpace.equals( that.nameSpace )
+          && factuals.equals( that.factuals ) 
+        )
       }
       case _ => false
     }
@@ -243,10 +243,10 @@ object CnxnCtxtBranch {
   def unapply[Namespace,Var,Tag](
     cnxnCtxtBranch : CnxnCtxtBranch[Namespace,Var,Tag]
   ) : Option[
-	(
-	  Namespace,
-	  List[CnxnCtxtLabel[Namespace,Var,Tag] with Factual]
-	)
+        (
+          Namespace,
+          List[CnxnCtxtLabel[Namespace,Var,Tag] with Factual]
+        )
       ] = {
     Some( ( cnxnCtxtBranch.nameSpace, cnxnCtxtBranch.factuals
  ) )
@@ -258,13 +258,13 @@ trait CnxnCtxtInjector[Namespace,Var,Tag] {
   : CnxnCtxtLabel[Namespace,Var,Tag] with Factual = {
     cLabel match {
       case cLeaf : CnxnLeaf[Namespace,Tag] =>
-	inject( cLeaf )
+        inject( cLeaf )
       case cBranch : CnxnBranch[Namespace,Tag] =>
-	inject( cBranch )
+        inject( cBranch )
       // case cCLeaf : CCnxnLeaf[Namespace,Tag] =>
-// 	inject( cCLeaf )
+//      inject( cCLeaf )
 //       case cCBranch : CCnxnBranch[Namespace,Tag] =>
-// 	inject( cCBranch )
+//      inject( cCBranch )
     }
   }
   def inject( cLabel : CnxnLeaf[Namespace,Tag] )
