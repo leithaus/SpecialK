@@ -188,8 +188,9 @@ extends CnxnConcreteToAbstractSyntax[Namespace,Var,Tag] {
   extends CnxnNavigation[String,String,String]
   with CnxnMutation[String,String,String]
   with CnxnZipperComposition[String,String,String]
+  with Serializable
 
-  object ContextVar {
+  object ContextVar extends Serializable {
     import java.util.UUID
     val thisContextVar : String =
       "X" + UUID.randomUUID.toString.replace( "-", "" ) + "X"
@@ -547,7 +548,7 @@ trait CnxnXML[Namespace,Var,Tag] extends CnxnString[Namespace,Var,Tag] {
       labelToNS( blobLabel ),
       List( 
 	new CnxnCtxtLeaf [Namespace,Var,Tag] (
-	  Left( valToTag( toBlob( cc ) ) )
+	  Left( valToTag( toBlob( cc.asInstanceOf[AnyRef] ) ) )
 	)
       )
     )

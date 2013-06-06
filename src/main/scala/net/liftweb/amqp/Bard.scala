@@ -8,7 +8,8 @@
 
 package net.liftweb.amqp;    
 
-import com.eaio.uuid.UUID;
+//import com.eaio.uuid.UUID;
+import java.util.UUID
 
 trait IdSupplier {
   type ActedOn = {def setId( s : String ) : Unit}
@@ -173,11 +174,11 @@ case class Fingerer(
 ) extends IdSupplier {
   override def recurse() = rcrs
   override def failOnUnknownType() = fOUT
-  override def inAction() = {
-    case x : Classic => {
-    }
-  }
+  // override def inAction() = {
+//     case x : Classic => {
+//     }
+//   }
   override def getNextId() = {
-    new UUID() + ""
+    UUID.randomUUID + ""
   }
 }
