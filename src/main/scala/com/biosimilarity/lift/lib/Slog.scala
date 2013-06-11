@@ -1,9 +1,9 @@
-// -*- mode: Scala;-*- 
-// Filename:    Slog.scala 
-// Authors:     lgm                                                    
-// Creation:    Wed Sep  8 11:17:09 2010 
-// Copyright:   Not supplied 
-// Description: 
+// -*- mode: Scala;-*-
+// Filename:    Slog.scala
+// Authors:     lgm
+// Creation:    Wed Sep  8 11:17:09 2010
+// Copyright:   Not supplied
+// Description:
 // ------------------------------------------------------------------------
 
 package com.biosimilarity.lift.lib
@@ -17,6 +17,7 @@ import scala.annotation.elidable._
 import scala.xml._
 import scala.collection.mutable.HashMap
 import java.util.UUID
+import java.io.File
 
 //import net.lag.configgy._
 
@@ -84,7 +85,7 @@ case object TheLuddite
 extends Luddite(
   JournalIDVender.getUUID
 )
-  
+
 
 trait SeverityConversions {
   def SeverityFromOption(level: Option[ String ]): Severity.Value =
@@ -129,11 +130,7 @@ trait SeverityConversions {
 
 object LogConfiguration extends SeverityConversions
 with Serializable {
-  //Configgy.configure("log.conf")
-
-  //@transient lazy val config = Configgy.config
-  @transient lazy val config = 
-    ConfigFactory.load( "log.conf" )
+  @transient lazy val config = ConfigFactory.load(ConfigFactory.parseFile(new File("log.conf")))
 
   var tweetLevel =
     try {
@@ -162,7 +159,7 @@ with Serializable {
 trait Journalist {
   object journalIDVender extends UUIDOps
 
-  import LogConfiguration._    
+  import LogConfiguration._
 
   def prettyPrintElisions() : HashMap[String,String] =
     {
@@ -194,8 +191,8 @@ trait Journalist {
   {
     ( value /: prettyPrintElisions )(
       { ( acc, e ) => { acc.replace( e._1, e._2 ) } }
-    ) 
-  }  
+    )
+  }
 
   def header(level: Severity.Value): String =
   {
@@ -334,7 +331,7 @@ trait Journalist {
 
 trait ConfiggyReporting {
   self : Journalist =>
-  
+
 }
 
 trait ConfiggyJournal {
@@ -347,7 +344,7 @@ object ConfiguredJournalDefaults {
 trait ConfiguredJournal {
   self : Journalist
        with ConfiggyReporting
-	with ConfigurationTrampoline =>    
+	with ConfigurationTrampoline =>
 
 }
 
@@ -358,6 +355,6 @@ class ConfiggyReporter(
   override val notebook : StringBuffer
 ) extends Reporter( notebook )
   with Journalist
-  with ConfiggyReporting	 
+  with ConfiggyReporting
   with ConfiggyJournal {
 }
