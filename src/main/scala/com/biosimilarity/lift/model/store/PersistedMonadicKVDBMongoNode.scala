@@ -64,6 +64,25 @@ case class UnificationQueryFilter[Namespace,Var,Tag](
   dbRslt : DBObject
 ) extends Exception( "unification refuted" )
 
+// trait Scribble[Resource] {
+//   def wrapWithCatch(
+//     sk : Option[Resource] => Unit @suspendable
+//   ) : Option[Resource] => Unit @suspendable = {
+//     ( optRsrc ) => {
+//       try {
+// 	sk( optRsrc )
+//       }
+//       catch {
+//         case t : Throwable => {
+//           val errors : java.io.StringWriter = new java.io.StringWriter()
+//           t.printStackTrace( new java.io.PrintWriter( errors ) )
+//           println( "unhandled exception : " + errors.toString( ) );                
+//         }
+//       }
+//     }
+//   }
+// }
+
 trait PersistedMonadicKVDBMongoNodeScope[Namespace,Var,Tag,Value] 
 extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {  
   //type PersistedKVDBNodeRequest = MonadicKVDBNodeScope[Namespace,Var,Tag,Value]#KVDBNodeRequest
@@ -71,6 +90,8 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
   
   type PersistedKVDBNodeRequest = Msgs.MDistributedTermSpaceRequest[Namespace,Var,Tag,Value]
   type PersistedKVDBNodeResponse = RsrcMsgs.RsrcResponse[Namespace,Var,Tag,Value]
+
+  //object Scribbler extends com.biosimilarity.lift.model.store.scribble.Scribble[mTT.Resource] {}
 
   trait PersistenceScope
     extends ExcludedMiddleScope[mTT.GetRequest,mTT.GetRequest,mTT.Resource]
@@ -1226,6 +1247,7 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
 	                    )
 	                  )
 			  for( sk <- ( k :: ks ) ) {
+                            //val skC = Scribbler.wrapWithCatch( sk )
                             tweet(
 	                      (
 	                        "PersistedMonadicKVDBMongoNode : "
