@@ -114,7 +114,7 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
 	// How is a Resource represented as a value in the store?
 	def asStoreValue(
 	  rsrc : mTT.Resource
-	) : CnxnCtxtLeaf[Namespace,Var,Tag] with Factual
+	) : CnxnCtxtLabel[Namespace,Var,Tag] with Factual
 	
 	// How is a key-value record represented in the store?
 	def asStoreRecord(
@@ -252,7 +252,7 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
 	
 	def asStoreValue(
 	  rsrc : mTT.Resource
-	) : Option[CnxnCtxtLeaf[Namespace,Var,Tag] with Factual] = {
+	) : Option[CnxnCtxtLabel[Namespace,Var,Tag] with Factual] = {
 	  for( pd <- persistenceManifest ) 
 	  yield { pd.asStoreValue( rsrc ) }
 	}
@@ -1055,19 +1055,44 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
 		    rcrd <- asStoreKRecord( ptn, rsrc );
 		    sus <- collName
 		  ) {
-		    BasicLogService.tweet(
-		      (
-			"storing to db : " /* + pd.db */
-			+ " pair : " + rcrd
-			+ " in coll : " + sus
-		      )
-		    )
-		    store( sus )( rcrd )(
-		      nameSpaceToString, varToString, tagToString, useUpsert
-		    )
-		    for( ( sky, stbl ) <- syncTable ) {
-		      stbl( sky ) = stbl( sky ) - 1
-		    }
+                    rcrd match {
+                      case CnxnCtxtBranch( ns, key :: CnxnCtxtBranch( vns, CnxnCtxtBranch( "continuationIndirection", link@CnxnCtxtLeaf( Left( linkUUID ) ) :: blob :: Nil ) :: Nil ) :: Nil ) => {
+                        BasicLogService.tweet(
+		          (
+			    "storing to db : " /* + pd.db */
+			    + " pair : " + rcrd
+			    + " in coll : " + sus
+		          )
+		        )
+                        val linkRcrd =
+                          new CnxnCtxtBranch[Namespace,Var,Tag](
+                            vns,
+                            List( link.asInstanceOf[CnxnCtxtLabel[Namespace,Var,Tag] with Factual] )
+                          )
+                        val kRcrd =
+                          new CnxnCtxtBranch[Namespace,Var,Tag](
+                            ns,
+                            List( key, linkRcrd )
+                          )
+                        val blobRcrd = 
+                          new CnxnCtxtBranch[Namespace,Var,Tag](
+                            labelToNS.getOrElse( throw new Exception( "missing labelToNS" ) )( linkUUID.toString ),
+                            List( blob )
+                          )
+		        store( sus )( kRcrd )(
+		          nameSpaceToString, varToString, tagToString, useUpsert
+		        )
+                        store( sus )( blobRcrd )(
+		          nameSpaceToString, varToString, tagToString, useUpsert
+		        )
+		        for( ( sky, stbl ) <- syncTable ) {
+		          stbl( sky ) = stbl( sky ) - 1
+		        }                     
+                      }
+                      case _ => {
+                        throw new Exception( "unexpected continuation record format : " + rcrd )
+                      }
+                    }		    
 		  }
 		}
 	      if ( spawnDBCall ) {
@@ -2563,32 +2588,15 @@ package usage {
 	      
 	      override def asStoreValue(
 		rsrc : mTT.Resource
-	      ) : CnxnCtxtLeaf[String,String,String] with Factual = {
+	      ) : CnxnCtxtLabel[String,String,String] with Factual = {
 		BasicLogService.tweet(
 		  "In asStoreValue on " + this + " for resource: " + rsrc
 		)
-		val storageDispatch = 
-		  rsrc match {
-		    case k : mTT.Continuation => {
-		      BasicLogService.tweet(
-			"Resource " + rsrc + " is a continuation"
-		      )
-		      continuationStorageType
-		    }
-		    case _ => {
-		      BasicLogService.tweet(
-			"Resource " + rsrc + " is a value"
-		      )
-		      valueStorageType
-		    }
-		  };
-		
-		BasicLogService.tweet(
-		  "storageDispatch: " + storageDispatch
-		)
-		
-		val blob =
-		  storageDispatch match {
+                def mkBlob( storageDispatch : String ) : String = {
+                  BasicLogService.tweet(
+		      "storageDispatch: " + storageDispatch
+		    )
+                  storageDispatch match {
 		    case "Base64" => {
 		      val baos : ByteArrayOutputStream = new ByteArrayOutputStream()
 		      val oos : ObjectOutputStream = new ObjectOutputStream( baos )
@@ -2612,10 +2620,40 @@ package usage {
 		    case _ => {
 		      throw new Exception( "unexpected value storage type" )
 		    }
+		  }		    
+                }
+
+                rsrc match {
+		  case k : mTT.Continuation => {
+		    BasicLogService.tweet(
+		      "Resource " + rsrc + " is a continuation"
+		    )
+		    val blob = mkBlob( continuationStorageType )                    
+                    val blobLeaf =
+                      new CnxnCtxtLeaf[String,String,String](
+		        Left[String,String]( blob )
+		      )
+                    val indirection = UUID.randomUUID.toString
+                    val linkLeaf =
+                      new CnxnCtxtLeaf[String,String,String](
+		        Left[String,String]( indirection )
+		      )
+                    new CnxnCtxtBranch[String,String,String](
+                      "continuationIndirection",
+                      List( linkLeaf, blobLeaf )
+                    )
 		  }
-		new CnxnCtxtLeaf[String,String,String](
-		  Left[String,String]( blob )
-		)
+		  case _ => {
+		    BasicLogService.tweet(
+		      "Resource " + rsrc + " is a value"
+		    )
+                    val blob = mkBlob( valueStorageType )
+                    new CnxnCtxtLeaf[String,String,String](
+		      Left[String,String]( blob )
+		    )
+		  }
+		}				
+						
 	      }
 	      
 	      def asCacheValue(
