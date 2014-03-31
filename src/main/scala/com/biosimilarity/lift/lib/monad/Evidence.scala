@@ -31,10 +31,11 @@ object MonadicEvidence {
   trait Monad[C[_]] extends Functor[C] {      
     def apply[S]( data : S ) : C[S]      
     def flatten[S]( m : C[C[S]]) : C[S]    
-    final def fmap[S,P >: S, T]( f : P => T ): C[P] => C[T] = {
+    // one of these must be overridden to break circularity
+    def fmap[S,P >: S, T]( f : P => T ): C[P] => C[T] = {
       ( mp : C[P] ) => bind( mp )( ( p : P ) => apply[T]( f( p ) ) )
     }    
-    final def bind[S, P >: S, T](
+    def bind[S, P >: S, T](
       mp : C[P]
     )( t : P => C[T] ) : C[T] = {
       flatten( fmap( t )( mp ) )
@@ -49,7 +50,7 @@ object MonadicEvidence {
     def map[U]( f : V => U ) = monad.fmap( f )( cv )
     def foreach( f : V => Unit ) = monad.fmap( f )( cv )
     def flatMap[U]( f : V => C[U]) = monad.bind( cv )( f )
-  }
+  }  
 }
 
 object MonadPlusEvidence {

@@ -17,7 +17,7 @@ object CCMonad {
     def apply( f : A => R ) : R = k( f )
   }  
 
-  implicit def CCFunctor[R]() : Functor[({type L[A] = CC[A,R]})#L] =
+  implicit def ccFunctor[R]() : Functor[({type L[A] = CC[A,R]})#L] =
     new Functor[({type L[A] = CC[A,R]})#L] {
       def fmap[V, P >: V, U]( f : P => U ) : CC[P,R] => CC[U,R] = {
 	( k : CC[P,R] ) => {
@@ -30,8 +30,8 @@ object CCMonad {
       }
     }
 
-  implicit def CCMonad[R]() : Monad[({type L[A] = CC[A,R]})#L] =
-    new Monad[({type L[A] = CC[A,R]})#L] {      
+  implicit def ccMonad[R]() : Monad[({type L[A] = CC[A,R]})#L] =
+    new Monad[({type L[A] = CC[A,R]})#L] {            
       def apply[A]( data : A ) = new CC(( k : A => R ) => k( data ) )      
       def flatten[A]( m : CC[CC[A,R],R] ) : CC[A,R] =
         new CC[A,R](
@@ -39,6 +39,9 @@ object CCMonad {
 	    m( ( kk : CC[A,R] ) => kk( k ) )
 	  }
         )
+      override def fmap[V, P >: V, U](
+        f : P => U
+      ) : CC[P,R] => CC[U,R] = ccFunctor().fmap( f )
     }
 
   trait DelimitedCC[R] {
@@ -63,12 +66,26 @@ object CCMonad {
     }
   }
 
-  implicit def DCCMonad[R]() : Monad[({type L[A] = CC[A,R]})#L] with DelimitedCC[R] =
+  implicit def dccMonad[R]() : Monad[({type L[A] = CC[A,R]})#L] with DelimitedCC[R] =
     new Monad[({type L[A] = CC[A,R]})#L] with DelimitedCC[R] {      
-      val kmonad = CCMonad[R]()
+      implicit val kmonad = ccMonad[R]()
       def apply[A]( data : A ) = kmonad( data )
       def flatten[A]( m : CC[CC[A,R],R] ) : CC[A,R] = kmonad.flatten( m )
+      override def fmap[V, P >: V, U](
+        f : P => U
+      ) : CC[P,R] => CC[U,R] = ccFunctor[R].fmap( f )
     }
+
+  // Evidence for M's monadicity can be used to produce a canonical
+  // interpretation of for-comprehension syntax.
+  implicit def mToFor[A,R](
+    cca : CC[A,R]
+  ) = new {
+    implicit val monad : Monad[({type L[A] = CC[A,R]})#L] with DelimitedCC[R] = dccMonad[R]
+    def map[U]( f : A => U ) = ccFunctor[R]().fmap[A,A,U]( f )( cca )
+    def foreach( f : A => Unit ) = ccFunctor[R]().fmap[A,A,Unit]( f )( cca )
+    def flatMap[U]( f : A => CC[U,R]) = monad.bind[A,A,U]( cca )( f )
+  }
 }
 
 object PCMonad {
@@ -219,7 +236,7 @@ package usage {
       def meaning[V](
         lambdaExpr : LambdaExpr[V]
       )( env : Environment[V] )( 
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]()
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]()
       ) : CC[Box[V,AnyRef],AnyRef] = {
         lambdaExpr match {
           case mention : Mention[V] =>
@@ -248,7 +265,7 @@ package usage {
       def innerMeaning[V](
         m : Mention[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         env.get( m.v ) match {
           case Some( a ) => mc( a )
@@ -259,7 +276,7 @@ package usage {
       def innerMeaning[V](
         abs : Abstraction[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]()
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]()
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc(
           Value(
@@ -275,7 +292,7 @@ package usage {
       def innerMeaning[V](
         app : Application[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.bind(
           meaning[V]( app.operation )( env )( mc )
@@ -299,7 +316,7 @@ package usage {
       def innerMeaning[V](
          v : Box[V,AnyRef]
        )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
          mc( v )
        }
@@ -307,7 +324,7 @@ package usage {
       def innerMeaning[V](
         sum : Summation[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.bind(
           meaning[V]( sum.l )( env )( mc )
@@ -339,7 +356,7 @@ package usage {
       def innerMeaning[V](
         cond : Condition[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.bind(
           meaning[V]( cond.test )( env )( mc )
@@ -370,7 +387,7 @@ package usage {
       def innerMeaning[V](
         binding : Binding[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.bind(
           meaning[V]( binding.actual )( env )( mc )
@@ -386,7 +403,7 @@ package usage {
       def innerMeaning[V](
         binding : RBinding[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         lazy val k : Box[V,AnyRef] => CC[Box[V,AnyRef],AnyRef] =
           ( v : Box[V,AnyRef] ) => {    
@@ -405,7 +422,7 @@ package usage {
       def innerMeaning[V](
         shift : Shift[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {        
 
         val h : CC[Box[V,AnyRef],CC[AnyRef,AnyRef]] =
@@ -422,7 +439,7 @@ package usage {
       def innerMeaning[V](
         reset : Reset[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = dccMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.reset(
           meaning[V]( reset.body )( env )( mc ).asInstanceOf[CC[AnyRef,AnyRef]]
@@ -440,6 +457,24 @@ package usage {
     import CCMonad._
     import LambdaCalculus._
     import CPS._
+
+    def kfact[R]( i : Int )( k : Int => R ) : R = {
+      if ( i <= 0 ) { k( 1 ) }
+      else {
+        kfact( i - 1 )( { j : Int => k( i * j ) } )
+      }
+    }
+
+    def ccfact[R]( n : Int ) : CC[Int,R] =
+      CC[Int,R](
+        { k : ( Int => R ) => {
+          if ( n <= 0 ) { k( 1 ) }
+          else {
+            ccfact( n - 1 )( { m : Int => k( n * m ) } )
+          }
+        }
+       }
+      )
 
     implicit val translator = new CallByValue{ }
 

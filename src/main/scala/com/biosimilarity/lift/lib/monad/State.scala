@@ -29,7 +29,7 @@ object StateMonad {
       }
     }
 
-  implicit def stateMonad[S]() =  new Monad[({type L[A] = State[S,A]})#L]{      
+  implicit def stateMonad[S]() = new Monad[({type L[A] = State[S,A]})#L]{      
     def apply[V]( data : V ) = new State(( s : S ) => ( s, data ) ) 
     def flatten[V]( m : State[S,State[S, V]] ) : State[S,V] =
       new State[S, V](
