@@ -388,7 +388,61 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
 	  value : mTT.Resource
 	) : CnxnCtxtLabel[Namespace,Var,Tag] with Factual = {
 	  //println( "in asStoreKRecord with kvKNameSpace = " + kvKNameSpace )
-	  asStoreEntry( key, value )( kvKNameSpace )
+	  asStoreEntry( key, value )( kvKNameSpace ) match {
+            case CnxnCtxtBranch( ns, linkRcrd :: blobRcrd :: Nil ) => {
+              // fix up as key-value records
+              ( linkRcrd, blobRcrd ) match {
+                case ( CnxnCtxtLeaf( Left( link ) ), CnxnCtxtLeaf( Left( blob ) ) ) => {
+                  val kRrcd =
+                    new CnxnCtxtBranch[Namespace,Var,Tag](
+	              kvKNameSpace,
+	              List(
+	                new CnxnCtxtBranch[Namespace,Var,Tag](
+		          labelToNS.getOrElse( throw new Exception( "missing labelToNS" ) )( "key" ),
+		          List( asStoreKey( key ) )
+	                ),
+	                new CnxnCtxtBranch[Namespace,Var,Tag](
+		          labelToNS.getOrElse( throw new Exception( "missing labelToNS" ) )( "value" ),
+		          List( linkRcrd )
+	                )
+	              )
+	            )
+                  val bRcrd =
+                    new CnxnCtxtBranch[Namespace,Var,Tag](
+	              kvKNameSpace,
+	              List(
+	                new CnxnCtxtBranch[Namespace,Var,Tag](
+		          labelToNS.getOrElse( throw new Exception( "missing labelToNS" ) )( "key" ),
+		          List(
+                            asStoreKey(
+                              new CnxnCtxtBranch[Namespace,Var,Tag](
+                                labelToNS.getOrElse( throw new Exception( "missing labelToNS" ) )( "link" ),
+                                List( linkRcrd )
+                              )
+                            )
+                          )
+	                ),
+	                new CnxnCtxtBranch[Namespace,Var,Tag](
+		          labelToNS.getOrElse( throw new Exception( "missing labelToNS" ) )( "value" ),
+		          List( blobRcrd )
+	                )
+	              )
+	            )
+                  new CnxnCtxtBranch[Namespace,Var,Tag]( kvKNameSpace, List( kRrcd, bRcrd ) )
+                }
+                case subrcrds@_ => {
+                  throw new Exception(
+                    "asStoreKRecord received unexpected record format from asStoreEntry: " + subrcrds
+                  )
+                }
+              }
+            }
+            case rcrd@_ => {
+              throw new Exception(
+                "asStoreKRecord received unexpected record format from asStoreEntry: " + rcrd
+              )
+            }
+          }
 	}
 
 	override def asCacheValue(
@@ -930,30 +984,6 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
                 List[( DBObject, emT.PlaceInstance )]( ),
                 qryRslts
               )
-              // ( List[( DBObject, emT.PlaceInstance )]( ) /: qryRslts )(
-//                 {
-//                   ( acc, e ) => {
-//                     try {
-//                       val ersrc = pd.asResource( path, e )
-//                       val pair = ( e, ersrc )
-//                       acc ++ List[( DBObject, emT.PlaceInstance )]( pair )
-//                     }
-//                     catch {
-//                       case e : UnificationQueryFilter[Namespace,Var,Tag] => {
-//                         BasicLogService.tweet( "filtering refuted pattern: " + e.ptn + "; key: " + e.key )
-//                         acc
-//                       }
-//                       case t : Throwable => {
-//                         val errors : java.io.StringWriter = new java.io.StringWriter()
-//                         t.printStackTrace( new java.io.PrintWriter( errors ) )
-//                         BasicLogService.tweet( "unhandled exception : " + errors.toString( ) )
-//                         throw( t )
-//                       }
-//                     }
-//                   }
-//                 }
-//               )
-              
             }
           BasicLogService.tweet(
 	    (
@@ -968,6 +998,7 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
 	  )
           pairs.getOrElse( List[( DBObject, emT.PlaceInstance )]( ) )
         }
+
 	def putInStore(
 	  persist : Option[PersistenceManifest],
 	  channels : Map[mTT.GetRequest,mTT.Resource],
@@ -1056,29 +1087,14 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
 		    sus <- collName
 		  ) {
                     rcrd match {
-                      case CnxnCtxtBranch( ns, key :: CnxnCtxtBranch( vns, CnxnCtxtBranch( "continuationIndirection", link@CnxnCtxtLeaf( Left( linkUUID ) ) :: blob :: Nil ) :: Nil ) :: Nil ) => {
+                      case CnxnCtxtBranch( ns, kRcrd :: blobRcrd :: Nil ) => {
                         BasicLogService.tweet(
 		          (
 			    "storing to db : " /* + pd.db */
 			    + " pair : " + rcrd
 			    + " in coll : " + sus
 		          )
-		        )
-                        val linkRcrd =
-                          new CnxnCtxtBranch[Namespace,Var,Tag](
-                            vns,
-                            List( link.asInstanceOf[CnxnCtxtLabel[Namespace,Var,Tag] with Factual] )
-                          )
-                        val kRcrd =
-                          new CnxnCtxtBranch[Namespace,Var,Tag](
-                            ns,
-                            List( key, linkRcrd )
-                          )
-                        val blobRcrd = 
-                          new CnxnCtxtBranch[Namespace,Var,Tag](
-                            labelToNS.getOrElse( throw new Exception( "missing labelToNS" ) )( linkUUID.toString ),
-                            List( blob )
-                          )
+		        )                        
 		        store( sus )( kRcrd )(
 		          nameSpaceToString, varToString, tagToString, useUpsert
 		        )
@@ -2639,7 +2655,7 @@ package usage {
 		        Left[String,String]( indirection )
 		      )
                     new CnxnCtxtBranch[String,String,String](
-                      "continuationIndirection",
+                      "kRedirect",
                       List( linkLeaf, blobLeaf )
                     )
 		  }

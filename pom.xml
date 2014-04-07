@@ -68,6 +68,11 @@
       <url>http://files.basex.org/maven</url>
     </repository>
     <repository>
+      <id>breeze</id>
+      <name>breeze-nlp</name>
+      <url>http://repo.scalanlp.org/repo</url>
+    </repository>
+    <repository>
       <id>ibiblio</id>
       <name>ibiblio maven2 mirror</name>
       <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
@@ -469,7 +474,24 @@
 	  <artifactId>jaxen</artifactId>
 	</exclusion>
       </exclusions>
-    </dependency>                        
+    </dependency>
+
+    <!-- breeze -->
+    <dependency>
+      <groupId>org.scalanlp</groupId>
+      <artifactId>breeze_2.10</artifactId>
+      <version>0.2.1</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.scalanlp</groupId>
+	  <artifactId>breeze-graphs_2.10</artifactId>
+	</exclusion>
+        <exclusion>
+	  <groupId>com.codecommit</groupId>
+	  <artifactId>anti-xml_2.9.1</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>            
 
     <dependency>
       <groupId>org.ow2.sirocco.vmm</groupId>

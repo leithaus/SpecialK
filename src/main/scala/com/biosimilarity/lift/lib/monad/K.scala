@@ -561,4 +561,48 @@ package usage {
       translator.meaning( lexpr )( env )( mc )
     }
   }
+  
+  object ShiftCanonicalForms {
+    import com.biosimilarity.lift.lib.monad.MonadicEvidence._
+    import com.biosimilarity.lift.lib.monad.CCMonad._
+    
+    import breeze.linalg._
+    import breeze.numerics._    
+
+    implicit val scalarMultiplication : ( Double, DenseVector[Double] ) => DenseVector[Double] =
+      ( a : Double, r : DenseVector[Double] ) => r * a
+    implicit val vectorAddition : ( DenseVector[Double], DenseVector[Double] ) => DenseVector[Double] =
+      ( v : DenseVector[Double], w : DenseVector[Double] ) => v + w           
+
+    def fvForm[A,R]( v : R )( implicit mult : ( A, R ) => R ) : ( A => CC[R,R] ) = {
+      ( a : A ) => {
+        CC[R,R]( ( k : R => R ) => mult( a, k( v ) ) )
+      }
+    }
+
+    def hForm[A,R]( b : A, w : R )( implicit sum : ( R, R ) => R ) : CC[A,CC[R,R]] = {
+      CC[A,CC[R,R]](
+        ( fv : A => CC[R,R] ) => {
+          CC[R,R]( ( kp : R => R ) => { sum( fv( b )( kp ), w ) } )
+        }
+      )
+    }
+
+    def shiftForm[A,R]( h : CC[A,CC[R,R]] )(
+      m : Monad[({type L[A] = CC[A,R]})#L] with DelimitedCC[R] = dccMonad[R]
+    ) : CC[A,R] = {
+      m.shift[A]( h )
+    }
+
+    val a = 2.0
+    val b = 3.0
+    // row vector
+    val v = DenseVector(1.0,2.0,3.0,4.0)
+    val w = DenseVector(1.0,2.0,3.0,4.0)
+
+    val fv1 =
+      fvForm[Double,DenseVector[Double]]( v )( scalarMultiplication )
+    val h1 =
+      hForm[Double,DenseVector[Double]]( b, w )( vectorAddition )    
+  }
 }
