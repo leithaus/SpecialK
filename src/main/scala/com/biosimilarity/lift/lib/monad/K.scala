@@ -248,7 +248,7 @@ package usage {
       def innerMeaning[V](
         m : Mention[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         env.get( m.v ) match {
           case Some( a ) => mc( a )
@@ -259,7 +259,7 @@ package usage {
       def innerMeaning[V](
         abs : Abstraction[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]()
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]()
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc(
           Value(
@@ -275,7 +275,7 @@ package usage {
       def innerMeaning[V](
         app : Application[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.bind(
           meaning[V]( app.operation )( env )( mc )
@@ -299,7 +299,7 @@ package usage {
       def innerMeaning[V](
          v : Box[V,AnyRef]
        )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
          mc( v )
        }
@@ -307,7 +307,7 @@ package usage {
       def innerMeaning[V](
         sum : Summation[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.bind(
           meaning[V]( sum.l )( env )( mc )
@@ -339,7 +339,7 @@ package usage {
       def innerMeaning[V](
         cond : Condition[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.bind(
           meaning[V]( cond.test )( env )( mc )
@@ -370,7 +370,7 @@ package usage {
       def innerMeaning[V](
         binding : Binding[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.bind(
           meaning[V]( binding.actual )( env )( mc )
@@ -386,7 +386,7 @@ package usage {
       def innerMeaning[V](
         binding : RBinding[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         lazy val k : Box[V,AnyRef] => CC[Box[V,AnyRef],AnyRef] =
           ( v : Box[V,AnyRef] ) => {    
@@ -405,7 +405,7 @@ package usage {
       def innerMeaning[V](
         shift : Shift[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {        
 
         val h : CC[Box[V,AnyRef],CC[AnyRef,AnyRef]] =
@@ -422,7 +422,7 @@ package usage {
       def innerMeaning[V](
         reset : Reset[V]
       )( env : Environment[V] )(
-        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] = DCCMonad[AnyRef]() 
+        mc : Monad[({type L[A] = CC[A,AnyRef]})#L] with DelimitedCC[AnyRef] //= DCCMonad[AnyRef]() 
       ) : CC[Box[V,AnyRef],AnyRef] = {
         mc.reset(
           meaning[V]( reset.body )( env )( mc ).asInstanceOf[CC[AnyRef,AnyRef]]

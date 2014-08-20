@@ -712,7 +712,7 @@ trait CnxnXML[Namespace,Var,Tag] extends CnxnString[Namespace,Var,Tag] {
     labelToNS : String => Namespace,
     valToTag : java.lang.Object => Tag
   )(
-    cc : ScalaObject with Product with Serializable
+    cc : AnyRef with Product with Serializable
   ) : CnxnCtxtLabel[Namespace,Var,Tag] with Factual = {    
     def fromCC(
       cc : java.lang.Object
@@ -726,7 +726,7 @@ trait CnxnXML[Namespace,Var,Tag] extends CnxnString[Namespace,Var,Tag] {
 	if ( cc.isInstanceOf[Option[_]] ) {
 	  cc match {
 	    case Some(
-	      thing : ScalaObject with Product with Serializable
+	      thing : AnyRef with Product with Serializable
 	    ) => {
 	      new CnxnCtxtBranch[Namespace,Var,Tag](
 		labelToNS( "some" ),
@@ -783,7 +783,7 @@ trait CnxnXML[Namespace,Var,Tag] extends CnxnString[Namespace,Var,Tag] {
     valToTag : java.lang.Object => Tag,
     strToVar : String => Var
   )(
-    cc : Product with Serializable, // heuristic for checking CaseClassness
+    cc : AnyRef with Product with Serializable, // heuristic for checking CaseClassness
     vars : List[(String,Option[String])],
     recurse : Boolean = false,
     varRoot : String = "X"
@@ -804,7 +804,7 @@ trait CnxnXML[Namespace,Var,Tag] extends CnxnString[Namespace,Var,Tag] {
 	if ( cc.isInstanceOf[Option[_]] ) {
 	  cc match {
 	    case Some(
-	      thing : Product with Serializable
+	      thing : AnyRef with Product with Serializable
 	    ) => {
 	      new CnxnCtxtBranch[Namespace,Var,Tag](
 		labelToNS( "some" ),
@@ -890,13 +890,13 @@ trait CnxnXML[Namespace,Var,Tag] extends CnxnString[Namespace,Var,Tag] {
     labelToNS : String => Namespace,
     valToTag : java.lang.Object => Tag
   )(
-    cc : ScalaObject with Product with Serializable
+    cc : AnyRef with Product with Serializable
   ) : CnxnCtxtLabel[Namespace,Var,Tag] with Factual = {
     fromCaseClass( ( m : java.lang.reflect.Method ) => true )( labelToNS, valToTag )( cc )
   }
 
   def fromCaseClass(
-    cc : ScalaObject with Product with Serializable
+    cc : AnyRef with Product with Serializable
   ) : CnxnCtxtLabel[String,String,String] with Factual = {    
     fromCaseClass [String,String,String] (
       ( x : String ) => x,
@@ -907,7 +907,7 @@ trait CnxnXML[Namespace,Var,Tag] extends CnxnString[Namespace,Var,Tag] {
   }
 
   def partialCaseClassDerivative(
-    cc : Product with Serializable,
+    cc : AnyRef with Product with Serializable,
     vars : List[(String,Option[String])]
   ) : CnxnCtxtLabel[String,String,String] with Factual = {    
     partialCaseClassDerivative [String,String,String] (
@@ -1202,13 +1202,13 @@ object CnxnConversionStringScope
   }
   
   implicit def asCnxnCtxtLabel(
-    cc : ScalaObject with Product with Serializable
+    cc : AnyRef with Product with Serializable
   ) : CnxnCtxtLabel[String,String,String] with Factual = {        
     cnxnConversions.fromCaseClass( l2ns, v2t )( cc )
   }
 
   implicit def partialCaseClassDerivative(
-    cc : Product with Serializable,
+    cc : AnyRef with Product with Serializable,
     vars : List[(String,Option[String])]
   ) : CnxnCtxtLabel[String,String,String] with Factual = {        
     cnxnConversions.partialCaseClassDerivative( ( m : java.lang.reflect.Method ) => true )( l2ns, v2t, s2v )( cc, vars )

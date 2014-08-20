@@ -113,9 +113,9 @@ trait CaseClassConversion {
       )
 
   def isCaseClass( candidate : Any ) = false
-  def isCaseClass( candidate : ScalaObject with Product with Serializable ) = true
+  def isCaseClass( candidate : Product with Serializable ) = true
 
-  def toTermSymbol( msg : ScalaObject with Product with Serializable ) : String = {
+  def toTermSymbol( msg : Product with Serializable ) : String = {
     val msgClassName = msg.getClass.getName
     val msgName =
       msgClassName.substring( 
@@ -126,12 +126,12 @@ trait CaseClassConversion {
     msgName.take( 1 ).toLowerCase + msgName.drop( 1 )
   }
   
-  def toTermActuals( msg : ScalaObject with Product with Serializable ) : String = {
-    def getArg( msg : ScalaObject with Product with Serializable, mthd : String ) : String = {
+  def toTermActuals( msg : Product with Serializable ) : String = {
+    def getArg( msg : Product with Serializable, mthd : String ) : String = {
       val meth = msg.getClass.getMethod( mthd )
       val mbr = meth.invoke( msg )
       if ( isCaseClass( mbr ) ) {
-	toTerm( mbr.asInstanceOf[ScalaObject with Product with Serializable] )
+	toTerm( mbr.asInstanceOf[Product with Serializable] )
       }
       else {
 	mbr.toString
@@ -162,7 +162,7 @@ trait CaseClassConversion {
     }    
   }
 
-  def toTerm( msg : ScalaObject with Product with Serializable ) : String = {
+  def toTerm( msg : Product with Serializable ) : String = {
     (
       toTermSymbol( msg )
       + "("

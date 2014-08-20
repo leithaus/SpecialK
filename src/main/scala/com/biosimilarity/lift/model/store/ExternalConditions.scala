@@ -97,7 +97,7 @@ with MapProxy[String,ReflectiveSurfaceT#Specimen]
     content : T,
     genExpr : ReflectiveSurfaceT#ExprTree
   ) : Specimen = {
-    Specimen( typeOf[T], Some( genExpr ), content )
+    new Specimen( typeOf[T], Some( genExpr ), content.asInstanceOf[AnyRef] )
   }
 
   def registerContent( content : AnyRef ) : String = {

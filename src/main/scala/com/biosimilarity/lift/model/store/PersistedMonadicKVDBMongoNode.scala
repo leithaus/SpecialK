@@ -3066,7 +3066,7 @@ package usage {
       def mkMolQry( kinase : Kinase ) : CnxnCtxtLabel[String,String,String] = {
 	import CnxnConversionStringScope._
 	kinase match {
-	  case cc : ScalaObject with Product with Serializable => {
+	  case cc : Product with Serializable => {
 	    asCnxnCtxtLabel( cc )
 	  }
 	  case _ => throw new Exception( "non concrete kinase: " + kinase )
