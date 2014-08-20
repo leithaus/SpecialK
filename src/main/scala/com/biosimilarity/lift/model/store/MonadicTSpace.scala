@@ -13,7 +13,7 @@ import com.biosimilarity.lift.lib._
 
 import scala.concurrent.{Channel => Chan, _}
 //import scala.concurrent.cpsops._
-
+import com.biosimilarity.lift.lib.concurrent._
 import scala.util.continuations._ 
 import scala.collection.MapProxy
 import scala.collection.mutable.Map

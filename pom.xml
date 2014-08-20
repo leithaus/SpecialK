@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.biosimilarity.lift</groupId>
   <artifactId>specialK</artifactId>
-  <version>1.1.8.0</version>
+  <version>1.1.8.1</version>
   <packaging>jar</packaging>
   <name>specialK Project</name>
   <inceptionYear>2010</inceptionYear>
@@ -111,11 +111,13 @@
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
-      <artifactId>casbah_2.10</artifactId>
+      <!--artifactId>casbah_2.10</artifactId-->
+      <artifactId>casbah_2.11</artifactId>
       <!-- artifactId>casbah_${scala.version}</artifactId -->
       <!-- version>2.5.1</version -->
       <!--version>2.6.2</version-->
-      <version>2.6.4</version>
+      <!--version>2.6.4</version-->
+      <version>2.7.3</version>
       <type>pom</type>
       <exclusions>
 	<exclusion>

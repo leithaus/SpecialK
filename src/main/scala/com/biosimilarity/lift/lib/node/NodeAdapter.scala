@@ -60,6 +60,7 @@ import scala.util.continuations._
 
 import scala.concurrent.{Channel => Chan, _}
 //import scala.concurrent.cpsops._
+import com.biosimilarity.lift.lib.concurrent._
 import scala.collection.immutable.HashMap
 import scala.util.parsing.combinator._
 
