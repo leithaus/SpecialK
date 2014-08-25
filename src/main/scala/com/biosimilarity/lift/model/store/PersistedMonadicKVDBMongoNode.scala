@@ -1409,7 +1409,14 @@ extends MonadicKVDBNodeScope[Namespace,Var,Tag,Value] with Serializable {
 	  )
 	  //spaceLock.occupy( None )
 	  spaceLock.occupy( ptn )
-	  BasicLogService.tweet( "Writer occupying spaceLock on a PersistedMonadicKVDBNode for mput on " + ptn + "." )
+	  BasicLogService.tweet(
+            (
+              "Writer occupying spaceLock on a PersistedMonadicKVDBNode "
+              + "for mput on "
+              + "\nthis = " + this
+              + "\nptn = " + ptn + "."
+            )
+          )
 	  //BasicLogService.tweet( "spaceLock reading room: " + spaceLock.readingRoom )
 	  //BasicLogService.tweet( "spaceLock writing room: " + spaceLock.writingRoom )
 

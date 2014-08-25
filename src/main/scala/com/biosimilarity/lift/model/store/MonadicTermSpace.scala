@@ -111,7 +111,7 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
 
     override type Substitution = PrologSubstitution
 
-    case class KeyKUnifiySpaceLock(
+    case class KeyKUnifySpaceLock(
       @transient override val locker : HashMap[ModeSpaceLock[RK,mTT.GetRequest]#ModeType,Int],
       override val maxOccupancy : Int
     ) extends ModeSpaceLock[RK,mTT.GetRequest] 
@@ -184,6 +184,12 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
                }             
              }
              predicateLock.acquire()
+             BasicLogService.tweet(
+               (
+                 "predicate lock acquired for " + this
+                 + "@" + System.identityHashCode()
+               )
+             )
              val lockerList = locker.toList
              val pass = loop( locker.toList )
              BasicLogService.tweet(
@@ -198,6 +204,12 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
              )
              if ( pass ) { locker += ( s -> 1 ) }
              predicateLock.release()
+             BasicLogService.tweet(
+               (
+                 "predicate lock released for " + this
+                 + "@" + System.identityHashCode()
+               )
+             )
              pass
            }
 
@@ -223,7 +235,7 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
 //         case Some( sl ) => sl        
 //         case None | null => {
 //           val sl =
-//             KeyKUnifiySpaceLock(
+//             KeyKUnifySpaceLock(
 //               new HashMap[ModeSpaceLock[RK,mTT.GetRequest]#ModeType,Int](),
 //               1
 //             )
@@ -241,7 +253,7 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
             case Some( sl ) => sl
             case None => {
               val sl = 
-                KeyKUnifiySpaceLock(
+                KeyKUnifySpaceLock(
                   new HashMap[ModeSpaceLock[RK,mTT.GetRequest]#ModeType,Int](),
                   1
                 )
@@ -256,7 +268,7 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
         }
         case None | null => {
           val sl = 
-            KeyKUnifiySpaceLock(
+            KeyKUnifySpaceLock(
               new HashMap[ModeSpaceLock[RK,mTT.GetRequest]#ModeType,Int](),
               1
             )
