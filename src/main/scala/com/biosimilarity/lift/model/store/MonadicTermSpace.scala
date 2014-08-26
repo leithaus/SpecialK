@@ -245,6 +245,9 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
 //       }
 //     }
 
+    @transient
+    val spaceLockLock = new scala.concurrent.Lock()
+
     var _spaceLockKey : Option[String] = None
     override def spaceLock : ModeSpaceLock[RK,mTT.GetRequest] = {
       _spaceLockKey match {
@@ -252,32 +255,67 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
           ExternalConditions.retrieveContent[ModeSpaceLock[RK,mTT.GetRequest]]( slk ) match {
             case Some( sl ) => sl
             case None => {
-              val sl = 
-                KeyKUnifySpaceLock(
-                  new HashMap[ModeSpaceLock[RK,mTT.GetRequest]#ModeType,Int](),
-                  1
-                )
-              val slk =
-                ExternalConditions.registerContentAsT[ModeSpaceLock[RK,mTT.GetRequest]](
-                  sl
-                )
-              _spaceLockKey = Some( slk )
-              sl
+              spaceLockLock.acquire()
+              val rslt = 
+                ExternalConditions.retrieveContent[ModeSpaceLock[RK,mTT.GetRequest]]( slk ) match {
+                  case Some( sl ) => sl
+                  case None => {
+                    val sl = 
+                      KeyKUnifySpaceLock(
+                        new HashMap[ModeSpaceLock[RK,mTT.GetRequest]#ModeType,Int](),
+                        1
+                      )
+                    val slk =
+                      ExternalConditions.registerContentAsT[ModeSpaceLock[RK,mTT.GetRequest]](
+                        sl
+                      )
+                    _spaceLockKey = Some( slk )
+                    sl
+                  }
+                }              
+              spaceLockLock.release()              
+              rslt
             }
           }
         }
         case None | null => {
-          val sl = 
-            KeyKUnifySpaceLock(
-              new HashMap[ModeSpaceLock[RK,mTT.GetRequest]#ModeType,Int](),
-              1
-            )
-          val slk =
-            ExternalConditions.registerContentAsT[ModeSpaceLock[RK,mTT.GetRequest]](
-              sl
-            )
-          _spaceLockKey = Some( slk )
-          sl
+          spaceLockLock.acquire()
+          val rslt = 
+            _spaceLockKey match {
+              case Some( slk ) => {
+                ExternalConditions.retrieveContent[ModeSpaceLock[RK,mTT.GetRequest]]( slk ) match {
+                  case Some( sl ) => sl
+                  case None => {
+                    val sl = 
+                      KeyKUnifySpaceLock(
+                        new HashMap[ModeSpaceLock[RK,mTT.GetRequest]#ModeType,Int](),
+                        1
+                      )
+                    val slk =
+                      ExternalConditions.registerContentAsT[ModeSpaceLock[RK,mTT.GetRequest]](
+                        sl
+                      )
+                    _spaceLockKey = Some( slk )
+                    sl
+                  }
+                }
+              }
+              case None => {
+                val sl = 
+                  KeyKUnifySpaceLock(
+                    new HashMap[ModeSpaceLock[RK,mTT.GetRequest]#ModeType,Int](),
+                    1
+                  )
+                val slk =
+                  ExternalConditions.registerContentAsT[ModeSpaceLock[RK,mTT.GetRequest]](
+                    sl
+                  )
+                _spaceLockKey = Some( slk )
+                sl
+              }
+            }
+          spaceLockLock.release()
+          rslt
         }
       }
     }
