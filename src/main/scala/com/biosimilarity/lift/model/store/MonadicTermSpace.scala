@@ -155,7 +155,7 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
            // allowedIn( ( pattern, boolean ), m = [( pattern1, boolean1 ), ..., ( patternN, booleanN )] )
            // =
            // and( for( ( p, b ) <- m if unifies( pattern, p ) ) yield { b } )
-
+ 
            val predicateLock = new scala.concurrent.Lock()
 
            override def allowedIn( s : ModeType ) : Boolean = {
@@ -186,8 +186,8 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
              predicateLock.acquire()
              BasicLogService.tweet(
                (
-                 "predicate lock acquired for " + this
-                 + "@" + System.identityHashCode()
+                 "predicate lock " + predicateLock + " acquired for " + this
+                 + "@" + System.identityHashCode( this )
                )
              )
              val lockerList = locker.toList
@@ -206,8 +206,8 @@ extends MonadicTermTypeScope[Namespace,Var,Tag,Value]
              predicateLock.release()
              BasicLogService.tweet(
                (
-                 "predicate lock released for " + this
-                 + "@" + System.identityHashCode()
+                 "predicate lock " + predicateLock + " released for " + this
+                 + "@" + System.identityHashCode( this )
                )
              )
              pass
