@@ -16,9 +16,10 @@
     <!-- scala.version>2.9.0-1</scala.version -->
     <!-- scala.version>2.9.2</scala.version -->
     <!-- scala.version>2.10.0</scala.version -->
-    <!-- scala.version>2.10.2</scala.version -->
-    <scala.version>2.11.0</scala.version>
-    <scala.prefix>2.11</scala.prefix>
+    <scala.version>2.10.2</scala.version>
+    <!-- scala.version>2.11.0</scala.version -->
+    <!-- scala.prefix>2.11</scala.prefix -->
+    <scala.prefix>2.10</scala.prefix>
     <!-- Common plugin settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
@@ -111,13 +112,13 @@
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
-      <!--artifactId>casbah_2.10</artifactId-->
-      <artifactId>casbah_2.11</artifactId>
+      <artifactId>casbah_2.10</artifactId>
+      <!-- artifactId>casbah_2.11</artifactId -->
       <!-- artifactId>casbah_${scala.version}</artifactId -->
       <!-- version>2.5.1</version -->
       <!--version>2.6.2</version-->
-      <!--version>2.6.4</version-->
-      <version>2.7.3</version>
+      <version>2.6.4</version>
+      <!-- version>2.7.3</version -->
       <type>pom</type>
       <exclusions>
 	<exclusion>
@@ -128,17 +129,17 @@
     </dependency>
     <dependency>
       <groupId>org.json4s</groupId>
-      <!--artifactId>json4s-jackson_2.10</artifactId-->
-      <artifactId>json4s-jackson_2.11</artifactId>
-      <!--version>3.2.4</version-->
-      <version>3.2.10</version>
+      <artifactId>json4s-jackson_2.10</artifactId>
+      <!-- artifactId>json4s-jackson_2.11</artifactId -->
+      <version>3.2.4</version>
+      <!-- version>3.2.10</version -->
     </dependency>
     <dependency>
       <groupId>org.json4s</groupId>
-      <!--artifactId>json4s-native_2.10</artifactId-->
-      <artifactId>json4s-native_2.11</artifactId>
-      <!--version>3.2.4</version-->
-      <version>3.2.10</version>
+      <artifactId>json4s-native_2.10</artifactId>
+      <!-- artifactId>json4s-native_2.11</artifactId -->
+      <version>3.2.4</version>
+      <!--version>3.2.10</version-->
     </dependency>
     <dependency>
 	<groupId>biz.source_code</groupId>
@@ -252,17 +253,19 @@
     <dependency>
       <groupId>org.scala-lang.plugins</groupId>
       <!-- artifactId>scala-continuations-library_2.11</artifactId -->
-      <artifactId>scala-continuations-library_2.11</artifactId>
-      <!-- version>1.0.2</version -->
-      <version>1.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.scala-lang.plugins</groupId>
       <!-- artifactId>scala-continuations-library_2.11</artifactId -->
-      <artifactId>scala-continuations-plugin_2.11.0</artifactId>
+      <artifactId>continuations</artifactId>
       <!-- version>1.0.2</version -->
-      <version>1.0.1</version>
+      <!-- version>1.0.1</version -->
+      <version>2.10.2</version>
     </dependency>
+    <!--dependency -->
+      <!-- groupId>org.scala-lang.plugins</groupId -->
+      <!-- artifactId>scala-continuations-library_2.11</artifactId -->
+      <!-- artifactId>scala-continuations-plugin_2.11.0</artifactId -->
+      <!-- version>1.0.2</version -->
+      <!-- version>1.0.1</version -->
+    <!-- /dependency-->
     <dependency>
       <groupId>org.prolog4j</groupId>
       <artifactId>prolog4j-api</artifactId>
@@ -552,12 +555,13 @@
 	  <compilerPlugins>
       	    <compilerPlugin>	      
       	      <groupId>org.scala-lang.plugins</groupId>
-              <!-- artifactId>continuations</artifactId -->
+              <artifactId>continuations</artifactId>
               <!-- artifactId>scala-continuations-library_2.11</artifactId -->
-              <artifactId>scala-continuations-plugin_2.11.0</artifactId>
+              <!-- artifactId>scala-continuations-plugin_2.11.0</artifactId -->
               <!-- version>${scala.prefix}</version -->
               <!-- version>1.0.2</version -->
-              <version>1.0.1</version>
+              <!-- version>1.0.1</version -->
+              <version>2.10.2</version>
       	    </compilerPlugin>
 	    <!-- <compilerPlugin>	       -->
 <!--       	      <groupId>org.scala-tools.sxr</groupId> -->
